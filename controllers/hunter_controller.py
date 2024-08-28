@@ -14,3 +14,11 @@ def register_hunter():
     # Add user using the model
     db_hunter = hunter_model.add_hunter(username, email, password)
     return {"msg": 'Hunter registered successfully!'}
+
+
+def get_hunter_by_id(hunter_id):
+  if request.method == 'GET':
+    hunter = hunter_model.fetch_hunter(hunter_id)
+    if not hunter:
+      return {"msg": 'Hunter doesn\'t exists.'}
+    return hunter

@@ -7,37 +7,37 @@ from config import DB_CONFIG
 
 # Connect to MySQL database
 def get_db_connection():
-    try:
-        conn = mysql.connector.connect(**DB_CONFIG)
-        return conn
-    except Error as e:
-        print(f"Error connecting to MySQL: {e}")
-        return None
+  try:
+      conn = mysql.connector.connect(**DB_CONFIG)
+      return conn
+  except Error as e:
+      print(f"Error connecting to MySQL: {e}")
+      return None
 
 # Create a table explicitly with SQL
 def create_hunter_table():
-    conn = get_db_connection()
-    if conn:
-        cursor = conn.cursor()
-        cursor.execute('''
-          CREATE TABLE IF NOT EXISTS Hunters 
-          ( 
-            Hunter_Id INT NOT NULL AUTO_INCREMENT,  
-            Avatar BLOB,  
-            Username VARCHAR(255) NOT NULL,  
-            Password VARCHAR(255) NOT NULL,  
-            Email VARCHAR(255) NOT NULL,  
-            Book_Id INT,  
-            Location_Id INT,  
-            Type_Hunter_Id INT, 
-            UNIQUE (Username),
-            UNIQUE (Email),
-            PRIMARY KEY (Hunter_Id)
-          );
-        ''')
-        conn.commit()
-        cursor.close()
-        conn.close()
+  conn = get_db_connection()
+  if conn:
+      cursor = conn.cursor()
+      cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Hunters 
+        ( 
+          Hunter_Id INT NOT NULL AUTO_INCREMENT,  
+          Avatar BLOB,  
+          Username VARCHAR(255) NOT NULL,  
+          Password VARCHAR(255) NOT NULL,  
+          Email VARCHAR(255) NOT NULL,  
+          Book_Id INT,  
+          Location_Id INT,  
+          Type_Hunter_Id INT, 
+          UNIQUE (Username),
+          UNIQUE (Email),
+          PRIMARY KEY (Hunter_Id)
+        );
+      ''')
+      conn.commit()
+      cursor.close()
+      conn.close()
 
 # Add a hunter using explicit SQL
 def add_hunter(username, email, password):
@@ -54,16 +54,27 @@ def add_hunter(username, email, password):
     conn.close()
   
   return db_hunter
-      
+
+
+def fetch_hunter(hunter_id):
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(f'SELECT * FROM Hunters WHERE Hunter_Id = {hunter_id}')
+    hunter = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return hunter
+  return {}    
 
 # Fetch all users explicitly with SQL
 def fetch_hunters():
-    conn = get_db_connection()
-    if conn:
-        cursor = conn.cursor(dictionary=True)  # Fetch rows as dictionaries
-        cursor.execute('SELECT * FROM Hunters')
-        hunters = cursor.fetchall()
-        cursor.close()
-        conn.close()
-        return hunters
-    return []
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor(dictionary=True)  # Fetch rows as dictionaries
+    cursor.execute('SELECT * FROM Hunters')
+    hunters = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return hunters
+  return []
