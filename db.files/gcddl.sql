@@ -18,9 +18,9 @@ CREATE TABLE book
  id INT PRIMARY KEY,  
 ); 
 
-CREATE TABLE card 
+CREATE TABLE Card 
 ( 
- title varchar(100),  
+ Title varchar(100),  
  quantity INT,  
  description varchar(500),  
  id INT PRIMARY KEY,  
