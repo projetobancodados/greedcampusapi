@@ -14,7 +14,9 @@ app.register_blueprint(auth_routes.auth)
 jwt = JWTManager(app)
 
 # Initialize the database
-hunter_model.create_hunter_table()
+hunter_model.create_hunters_table()
+hunter_model.create_hunter_stats_table()
+hunter_model.create_hunter_book_table()
 
 
 if __name__ == '__main__':

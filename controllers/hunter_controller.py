@@ -11,8 +11,17 @@ def register_hunter():
     email = request.json['email']
     password = request.json['password']
 
-    # Add user using the model
-    db_hunter = hunter_model.add_hunter(username, email, password)
+    # Add hunter using the model
+    hunter_model.add_hunter(username, email, password)
+    
+    # Retrieve newly created hunter
+    db_hunter = hunter_model.fetch_hunter_auth(username)
+    
+    # add hunter stats to hunter
+    if db_hunter:
+      hunter_model.add_hunter_stats(db_hunter['Hunter_Id'])
+      hunter_model.add_hunter_book(db_hunter['Hunter_Id'])
+    
     return {"msg": 'Hunter registered successfully!'}
 
 

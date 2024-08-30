@@ -1,24 +1,53 @@
+---------------------------------------------- Tabelas e relacionamentos definidos
+CREATE TABLE IF NOT EXISTS Types_Hunter 
+( 
+  Description VARCHAR(30) NOT NULL,  
+  Type_Hunter_Id INT NOT NULL AUTO_INCREMENT, 
+  PRIMARY KEY (Type_Hunter_Id)
+); 
+
+CREATE TABLE IF NOT EXISTS Locations
+( 
+  Description varchar(500) NOT NULL,  
+  Location_Id INT NOT NULL AUTO_INCREMENT,  
+  PRIMARY KEY (Location_Id)
+);
+
 CREATE TABLE IF NOT EXISTS Hunters 
 ( 
- Hunter_Id INT NOT NULL AUTO_INCREMENT,  
- Avatar BLOB,  
- Username VARCHAR(255) NOT NULL,  
- Password VARCHAR(255) NOT NULL,  
- Email VARCHAR(255) NOT NULL,  
- Book_Id INT,  
- Location_Id INT,  
- Type_Hunter_Id INT, 
- UNIQUE (Username),
- UNIQUE(Email),
- PRIMARY KEY (Hunter_Id)
+  Hunter_Id INT NOT NULL AUTO_INCREMENT,  
+  Avatar BLOB,  
+  Username VARCHAR(255) NOT NULL,  
+  Password VARCHAR(255) NOT NULL,  
+  Email VARCHAR(255) NOT NULL,  
+  Location_Id INT,  
+  Type_Hunter_Id INT, 
+  UNIQUE (Username),
+  UNIQUE(Email),
+  PRIMARY KEY (Hunter_Id),
+  FOREIGN KEY (Location_Id) REFERENCES Locations (Location_Id),
+  FOREIGN KEY (Type_Hunter_Id) REFERENCES Types_Hunter (Type_Hunter_Id)
 ); 
 
-CREATE TABLE Book
+CREATE TABLE IF NOT EXISTS Hunter_Stats 
+(
+  Hunter_Stats_Id INT NOT NULL AUTO_INCREMENT,
+  Jenny_Qtd BIGINT,  
+  Cards_Qtd INT,  
+  Hunter_Id INT NOT NULL,
+  PRIMARY KEY (Hunter_Stats_Id),
+  FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id)
+);
+
+CREATE TABLE IF NOT EXISTS Books
 ( 
- Book_Id INT NOT NULL AUTO_INCREMENT,
- PRIMARY KEY (Book_Id)  
-); 
+  Book_Id INT NOT NULL AUTO_INCREMENT,
+  Hunter_Id INT NOT NULL,
+  PRIMARY KEY (Book_Id),
+  FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id)
+);
 
+---------------------------------------------- Corrigir a partir daqui
 CREATE TABLE Card 
 ( 
  Title varchar(100),  
@@ -38,9 +67,9 @@ CREATE TABLE question
  idtype_question INT,  
 ); 
 
-CREATE TABLE type_question 
+CREATE TABLE Type_Question 
 ( 
- type_description varchar(30),  
+ Type_Description varchar(30) NOT NULL,  
  id INT PRIMARY KEY,  
 ); 
 
@@ -56,31 +85,11 @@ CREATE TABLE card_challenge
  idcard INT,  
 ); 
 
-CREATE TABLE hunter_stats 
-( 
- jenny_qtd INT,  
- cards_qtd INT,  
- id INT PRIMARY KEY,  
- idhunter INT,  
-); 
-
 CREATE TABLE card_difficulty 
 ( 
  difficulty_code INT PRIMARY KEY,  
  difficulty_description varchar(5),  
  idcard INT,  
-); 
-
-CREATE TABLE location 
-( 
- description varchar(500),  
- id INT PRIMARY KEY,  
-); 
-
-CREATE TABLE type_hunter 
-( 
- description varchar(30),  
- id INT PRIMARY KEY,  
 ); 
 
 CREATE TABLE book_cards 
@@ -95,9 +104,6 @@ CREATE TABLE card_challenge_answer
  idanswer INT,  
 ); 
 
-ALTER TABLE hunter ADD FOREIGN KEY(idbook) REFERENCES book (id);
-ALTER TABLE hunter ADD FOREIGN KEY(idlocation) REFERENCES location (id);
-ALTER TABLE hunter ADD FOREIGN KEY(idtype_hunter) REFERENCES type_hunter (id);
 ALTER TABLE question ADD FOREIGN KEY(difficulty_code) REFERENCES card_difficulty (difficulty_code);
 ALTER TABLE question ADD FOREIGN KEY(idcard) REFERENCES card (id);
 ALTER TABLE question ADD FOREIGN KEY(idtype_question) REFERENCES type_question (id);
