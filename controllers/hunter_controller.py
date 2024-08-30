@@ -22,3 +22,4 @@ def get_hunter_by_id(hunter_id):
     if not hunter:
       return {"msg": 'Hunter doesn\'t exists.'}
     return hunter
+  

@@ -39,7 +39,7 @@ def create_hunter_table():
       cursor.close()
       conn.close()
 
-# Add a hunter using explicit SQL
+
 def add_hunter(username, email, password):
   conn = get_db_connection()
   db_hunter = (username, email, password)
@@ -67,7 +67,19 @@ def fetch_hunter(hunter_id):
     return hunter
   return {}    
 
-# Fetch all users explicitly with SQL
+
+def fetch_hunter_auth(username):
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(f'SELECT Username, Password FROM Hunters WHERE Username LIKE \'{username}\'')
+    hunter = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return hunter
+  return {}
+
+
 def fetch_hunters():
   conn = get_db_connection()
   if conn:
