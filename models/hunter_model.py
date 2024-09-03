@@ -32,8 +32,8 @@ def create_hunters_table():
           UNIQUE (Username),
           UNIQUE(Email),
           PRIMARY KEY (Hunter_Id),
-          FOREIGN KEY (Location_Id) REFERENCES Locations (Location_Id),
-          FOREIGN KEY (Type_Hunter_Id) REFERENCES Types_Hunter (Type_Hunter_Id)
+          FOREIGN KEY (Location_Id) REFERENCES Locations (Location_Id) ON DELETE CASCADE,
+          FOREIGN KEY (Type_Hunter_Id) REFERENCES Types_Hunter (Type_Hunter_Id) ON DELETE CASCADE
         ); 
       ''')
       conn.commit()
@@ -47,13 +47,13 @@ def create_hunter_stats_table():
       cursor = conn.cursor()
       cursor.execute('''
         CREATE TABLE IF NOT EXISTS Hunter_Stats 
-        ( 
+        (
+          Hunter_Stats_Id INT NOT NULL AUTO_INCREMENT,
           Jenny_Qtd BIGINT,  
           Cards_Qtd INT,  
-          Hunter_Stats_Id INT NOT NULL AUTO_INCREMENT,
           Hunter_Id INT NOT NULL,
           PRIMARY KEY (Hunter_Stats_Id),
-          FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id)
+          FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id) ON DELETE CASCADE
         );
       ''')
       conn.commit()
@@ -71,7 +71,7 @@ def create_hunter_book_table():
           Book_Id INT NOT NULL AUTO_INCREMENT,
           Hunter_Id INT NOT NULL,
           PRIMARY KEY (Book_Id),
-          FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id)
+          FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id) ON DELETE CASCADE
         );
       ''')
       conn.commit()
@@ -169,11 +169,25 @@ def update_hunter(hunter_id, content):
   #   ''')
   if conn:
     cursor = conn.cursor()
-    cursor.execute(f'''
+    query = f'''
       UPDATE Hunters SET Username = '{content['Username']}',
-      Password = '{content['Password']}', Email = '{content['Email']}',
-      Avatar = '{content['Avatar']}'
-      WHERE Hunter_Id = {hunter_id}
+      Password = '{content['Password']}', Email = '{content['Email']}'
+    '''
+    if content['Avatar']:
+      query += f", Avatar = '{content['Avatar']}'"
+    query += f" WHERE Hunter_Id = {hunter_id}"
+    cursor.execute(query)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+def delete_hunter(hunter_id):
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor()
+    cursor.execute(f'''
+      DELETE FROM Hunters WHERE Hunter_Id = {hunter_id}
     ''')
     conn.commit()
     cursor.close()

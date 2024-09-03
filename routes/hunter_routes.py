@@ -44,3 +44,13 @@ def update_hunter_by_id(hunter_id):
     return hunter_controller.update_hunter_by_id(hunter_id)
   except Exception as e:
     return json.dumps({"msg": e.msg})
+  
+
+# Delete hunter by id
+@hunter.route('/hunter/delete/<hunter_id>', methods=['DELETE'])
+@cross_origin()
+def delete_hunter_by_id(hunter_id):
+  try:
+    return hunter_controller.delete_hunter_by_id(hunter_id)
+  except Exception as e:
+    return json.dumps({"msg": e.msg})

@@ -60,3 +60,17 @@ def update_hunter_by_id(hunter_id):
     if not hunter_to_update:
       return {"msg": 'Hunter doesn\'t exists.'}
     return hunter_to_update
+  
+  
+def delete_hunter_by_id(hunter_id):
+  if request.method == 'DELETE':
+    hunter = hunter_model.fetch_hunter(hunter_id)
+    if not hunter:
+      return {"msg": 'Hunter doesn\'t exists.'}
+    
+    hunter_model.delete_hunter(hunter_id)
+    hunter = hunter_model.fetch_hunter(hunter_id)
+    if hunter:
+      return {"msg": 'Error on Hunter Delete!'}
+    
+    return {"msg": 'Hunter deleted successfully!'}
