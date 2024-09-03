@@ -1,4 +1,5 @@
 ---------------------------------------------- Tabelas e relacionamentos definidos
+--- Criar antes
 CREATE TABLE IF NOT EXISTS Types_Hunter 
 ( 
   Description VARCHAR(30) NOT NULL,  
@@ -6,6 +7,7 @@ CREATE TABLE IF NOT EXISTS Types_Hunter
   PRIMARY KEY (Type_Hunter_Id)
 ); 
 
+--- Criar antes
 CREATE TABLE IF NOT EXISTS Locations
 ( 
   Description varchar(500) NOT NULL,  
@@ -13,6 +15,7 @@ CREATE TABLE IF NOT EXISTS Locations
   PRIMARY KEY (Location_Id)
 );
 
+--- Criar no sistema (flask)
 CREATE TABLE IF NOT EXISTS Hunters 
 ( 
   Hunter_Id INT NOT NULL AUTO_INCREMENT,  
@@ -29,6 +32,7 @@ CREATE TABLE IF NOT EXISTS Hunters
   FOREIGN KEY (Type_Hunter_Id) REFERENCES Types_Hunter (Type_Hunter_Id)
 ); 
 
+--- Criar no sistema (flask)
 CREATE TABLE IF NOT EXISTS Hunter_Stats 
 (
   Hunter_Stats_Id INT NOT NULL AUTO_INCREMENT,
@@ -39,6 +43,7 @@ CREATE TABLE IF NOT EXISTS Hunter_Stats
   FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id)
 );
 
+--- Criar no sistema (flask)
 CREATE TABLE IF NOT EXISTS Books
 ( 
   Book_Id INT NOT NULL AUTO_INCREMENT,
@@ -47,17 +52,29 @@ CREATE TABLE IF NOT EXISTS Books
   FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id)
 );
 
----------------------------------------------- Corrigir a partir daqui
-CREATE TABLE Card 
+-- Criar antes
+CREATE TABLE Card_Difficulty 
 ( 
- Title varchar(100),  
- quantity INT,  
- description varchar(500),  
- id INT PRIMARY KEY,  
- card_img image,  
- slot_number INT,  
+ Difficulty_Code INT NOT NULL AUTO_INCREMENT,  
+ Difficulty_Description Varchar(10),
+ PRIMARY KEY (Difficulty_Code)
 ); 
 
+--- Criar no sistema (flask)
+CREATE TABLE Cards 
+( 
+ Title Varchar(500) NOT NULL,  
+ Quantity INT NOT NULL,  
+ Description varchar(500) NOT NULL,  
+ Card_Id INT NOT NULL AUTO_INCREMENT,  
+ Card_Img BLOB,  
+ Slot_Number Varchar(20),
+ Difficulty_Code INT NOT NULL,  
+ PRIMARY KEY (Card_Id),
+ FOREIGN KEY (Difficulty_Code) REFERENCES Card_Difficulty (Difficulty_Code)
+); 
+
+---------------------------------------------- Corrigir a partir daqui
 CREATE TABLE question 
 ( 
  statement text,  
@@ -85,12 +102,7 @@ CREATE TABLE card_challenge
  idcard INT,  
 ); 
 
-CREATE TABLE card_difficulty 
-( 
- difficulty_code INT PRIMARY KEY,  
- difficulty_description varchar(5),  
- idcard INT,  
-); 
+
 
 CREATE TABLE book_cards 
 ( 
@@ -105,9 +117,7 @@ CREATE TABLE card_challenge_answer
 ); 
 
 ALTER TABLE question ADD FOREIGN KEY(difficulty_code) REFERENCES card_difficulty (difficulty_code);
-ALTER TABLE question ADD FOREIGN KEY(idcard) REFERENCES card (id);
 ALTER TABLE question ADD FOREIGN KEY(idtype_question) REFERENCES type_question (id);
-ALTER TABLE card_challenge ADD FOREIGN KEY(idcard) REFERENCES card (id);
 ALTER TABLE hunter_stats ADD FOREIGN KEY(idhunter) REFERENCES hunter (id);
 ALTER TABLE card_difficulty ADD FOREIGN KEY(idcard) REFERENCES card (id);
 ALTER TABLE book_cards ADD FOREIGN KEY(idcard) REFERENCES card (id);
