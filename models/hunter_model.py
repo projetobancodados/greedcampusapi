@@ -23,7 +23,7 @@ def create_hunters_table():
         CREATE TABLE IF NOT EXISTS Hunters 
         ( 
           Hunter_Id INT NOT NULL AUTO_INCREMENT,  
-          Avatar BLOB,  
+          Avatar LONGBLOB,  
           Username VARCHAR(255) NOT NULL,  
           Password VARCHAR(255) NOT NULL,  
           Email VARCHAR(255) NOT NULL,  
@@ -135,7 +135,11 @@ def fetch_hunter_auth(username):
   conn = get_db_connection()
   if conn:
     cursor = conn.cursor(dictionary=True)
-    cursor.execute(f'SELECT Hunter_Id, Username, Password FROM Hunters WHERE Username LIKE \'{username}\'')
+    cursor.execute(f'''
+      SELECT Hunter_Id, Username, Password, Email,
+      CAST(Avatar AS CHAR) AS Avatar
+      FROM Hunters WHERE Username LIKE \'{username}\'
+    ''')
     hunter = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -153,3 +157,24 @@ def fetch_hunters():
     conn.close()
     return hunters
   return []
+
+
+def update_hunter(hunter_id, content):
+  conn = get_db_connection()
+  # print(f'''
+  #     UPDATE Hunters SET Username = '{content['Username']}',
+  #     Password = '{content['Password']}', Email = '{content['Email']}',
+  #     Avatar = {content['Avatar']}
+  #     WHERE Hunter_Id = {hunter_id}
+  #   ''')
+  if conn:
+    cursor = conn.cursor()
+    cursor.execute(f'''
+      UPDATE Hunters SET Username = '{content['Username']}',
+      Password = '{content['Password']}', Email = '{content['Email']}',
+      Avatar = '{content['Avatar']}'
+      WHERE Hunter_Id = {hunter_id}
+    ''')
+    conn.commit()
+    cursor.close()
+    conn.close()
