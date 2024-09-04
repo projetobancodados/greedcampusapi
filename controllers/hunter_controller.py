@@ -1,5 +1,7 @@
 from flask import request
 from models import hunter_model
+from flask_jwt_extended import decode_token
+
 
 
 # Controller to add a hunter
@@ -35,16 +37,40 @@ def get_hunter_by_id(hunter_id):
 # Controller to get hunter by username
 def get_hunter_by_username(hunter_username):
   if request.method == 'GET':
-    hunter = hunter_model.fetch_hunter_auth(hunter_username)
+    hunter_username = decode_token(hunter_username, allow_expired=True)
+    hunter = hunter_model.fetch_hunter_auth(hunter_username['sub'])
     if not hunter:
       return {"msg": 'Hunter doesn\'t exists.'}
-  return hunter
+    return hunter
 
 
 # Controller to update hunter data
-# def update_hunter_by_id(hunter_id):
-#   if request.method == 'POST':
-#     hunter = hunter_model.fetch_hunter(hunter_id)
-#     if not hunter:
-#       return {"msg": 'Hunter doesn\'t exists.'}
-#     return hunter
+def update_hunter_by_id(hunter_id):
+  if request.method == 'PATCH':
+    # if 'Avatar' not in request.files:
+    #   return {'msg': 'No file part'}
+    hunter = request.get_json()
+    hunter_to_update = {
+      "Username": hunter['Username'],
+      "Password": hunter['Password'],
+      "Email": hunter['Email'],
+      "Avatar": hunter['Avatar']
+    }
+    hunter_model.update_hunter(hunter_id, hunter_to_update)
+    if not hunter_to_update:
+      return {"msg": 'Hunter doesn\'t exists.'}
+    return hunter_to_update
+  
+  
+def delete_hunter_by_id(hunter_id):
+  if request.method == 'DELETE':
+    hunter = hunter_model.fetch_hunter(hunter_id)
+    if not hunter:
+      return {"msg": 'Hunter doesn\'t exists.'}
+    
+    hunter_model.delete_hunter(hunter_id)
+    hunter = hunter_model.fetch_hunter(hunter_id)
+    if hunter:
+      return {"msg": 'Error on Hunter Delete!'}
+    
+    return {"msg": 'Hunter deleted successfully!'}

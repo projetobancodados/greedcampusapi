@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS Locations
 CREATE TABLE IF NOT EXISTS Hunters 
 ( 
   Hunter_Id INT NOT NULL AUTO_INCREMENT,  
-  Avatar BLOB,  
+  Avatar LONGBLOB,  
   Username VARCHAR(255) NOT NULL,  
   Password VARCHAR(255) NOT NULL,  
   Email VARCHAR(255) NOT NULL,  
@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS Hunters
   UNIQUE (Username),
   UNIQUE(Email),
   PRIMARY KEY (Hunter_Id),
-  FOREIGN KEY (Location_Id) REFERENCES Locations (Location_Id),
-  FOREIGN KEY (Type_Hunter_Id) REFERENCES Types_Hunter (Type_Hunter_Id)
+  FOREIGN KEY (Location_Id) REFERENCES Locations (Location_Id) ON DELETE CASCADE,
+  FOREIGN KEY (Type_Hunter_Id) REFERENCES Types_Hunter (Type_Hunter_Id) ON DELETE CASCADE
 ); 
 
 --- Criar no sistema (flask)
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS Hunter_Stats
   Cards_Qtd INT,  
   Hunter_Id INT NOT NULL,
   PRIMARY KEY (Hunter_Stats_Id),
-  FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id)
+  FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id) ON DELETE CASCADE
 );
 
 --- Criar no sistema (flask)
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS Books
   Book_Id INT NOT NULL AUTO_INCREMENT,
   Hunter_Id INT NOT NULL,
   PRIMARY KEY (Book_Id),
-  FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id)
+  FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id) ON DELETE CASCADE
 );
 
 -- Criar antes
@@ -71,7 +71,7 @@ CREATE TABLE Cards
  Slot_Number Varchar(20),
  Difficulty_Code INT NOT NULL,  
  PRIMARY KEY (Card_Id),
- FOREIGN KEY (Difficulty_Code) REFERENCES Card_Difficulty (Difficulty_Code)
+ FOREIGN KEY (Difficulty_Code) REFERENCES Card_Difficulty (Difficulty_Code) ON DELETE CASCADE
 ); 
 
 ---------------------------------------------- Corrigir a partir daqui

@@ -6,8 +6,8 @@ from models.hunter_model import fetch_hunter_auth
 
 def token():
   if request.method == 'POST':
-    username = request.json['username']
-    password = request.json['password']
+    username = request.json['Username']
+    password = request.json['Password']
     
     hunter = fetch_hunter_auth(username)
     if hunter:

@@ -24,6 +24,15 @@ INSERT INTO Card_Difficulty (Difficulty_Description) VALUES ("F");
 INSERT INTO Card_Difficulty (Difficulty_Description) VALUES ("G");
 INSERT INTO Card_Difficulty (Difficulty_Description) VALUES ("H");
 
+BEGIN TRANSACTION delete_hunter_transaction;
+SET TRANSACTION;
+  DELETE FROM Books WHERE Hunter_Id = 1;
+  ROLLBACK;
+  DELETE FROM Hunter_Stats WHERE Hunter_Id = 1;
+  ROLLBACK;
+  DELETE FROM Hunters WHERE Hunter_Id = 1;
+COMMIT;
+
 -- Cards (000 - 099)
 INSERT INTO Cards (Title, Quantity, Description, Slot_Number, Difficulty_Code) VALUES ("Ruler's Blessings", 1, "A Castle given as a prize for winning the contest, town with population 10.000 included. It's Residents will live according to whatever laws and commands you issue.", "000", 1);
 INSERT INTO Cards (Title, Quantity, Description, Slot_Number, Difficulty_Code) VALUES ("Patch of Forest", 3, "The entrance to the giant forest called the Mountain god's garden where many unique endemic species live. They are all tame and friendly.", "001", 1);

@@ -23,7 +23,7 @@ def create_hunters_table():
         CREATE TABLE IF NOT EXISTS Hunters 
         ( 
           Hunter_Id INT NOT NULL AUTO_INCREMENT,  
-          Avatar BLOB,  
+          Avatar LONGBLOB,  
           Username VARCHAR(255) NOT NULL,  
           Password VARCHAR(255) NOT NULL,  
           Email VARCHAR(255) NOT NULL,  
@@ -32,8 +32,8 @@ def create_hunters_table():
           UNIQUE (Username),
           UNIQUE(Email),
           PRIMARY KEY (Hunter_Id),
-          FOREIGN KEY (Location_Id) REFERENCES Locations (Location_Id),
-          FOREIGN KEY (Type_Hunter_Id) REFERENCES Types_Hunter (Type_Hunter_Id)
+          FOREIGN KEY (Location_Id) REFERENCES Locations (Location_Id) ON DELETE CASCADE,
+          FOREIGN KEY (Type_Hunter_Id) REFERENCES Types_Hunter (Type_Hunter_Id) ON DELETE CASCADE
         ); 
       ''')
       conn.commit()
@@ -47,13 +47,13 @@ def create_hunter_stats_table():
       cursor = conn.cursor()
       cursor.execute('''
         CREATE TABLE IF NOT EXISTS Hunter_Stats 
-        ( 
+        (
+          Hunter_Stats_Id INT NOT NULL AUTO_INCREMENT,
           Jenny_Qtd BIGINT,  
           Cards_Qtd INT,  
-          Hunter_Stats_Id INT NOT NULL AUTO_INCREMENT,
           Hunter_Id INT NOT NULL,
           PRIMARY KEY (Hunter_Stats_Id),
-          FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id)
+          FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id) ON DELETE CASCADE
         );
       ''')
       conn.commit()
@@ -71,7 +71,7 @@ def create_hunter_book_table():
           Book_Id INT NOT NULL AUTO_INCREMENT,
           Hunter_Id INT NOT NULL,
           PRIMARY KEY (Book_Id),
-          FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id)
+          FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id) ON DELETE CASCADE
         );
       ''')
       conn.commit()
@@ -81,12 +81,12 @@ def create_hunter_book_table():
 
 def add_hunter(username, email, password):
   conn = get_db_connection()
-  db_hunter = (username, email, password)
+  db_hunter = (username, email, password, 2)
   if conn:
     cursor = conn.cursor()
     cursor.execute('''
-      INSERT INTO Hunters (Username, Email, Password) 
-      VALUES (%s, %s, %s)
+      INSERT INTO Hunters (Username, Email, Password, Type_Hunter_Id) 
+      VALUES (%s, %s, %s, %s)
     ''', db_hunter)
     conn.commit()
     cursor.close()
@@ -117,13 +117,21 @@ def add_hunter_book(hunter_id):
     conn.commit()
     cursor.close()
     conn.close()
-
+    
 
 def fetch_hunter(hunter_id):
   conn = get_db_connection()
   if conn:
     cursor = conn.cursor(dictionary=True)
-    cursor.execute(f'SELECT * FROM Hunters WHERE Hunter_Id = {hunter_id}')
+    cursor.execute(f'''
+      SELECT th.Description AS Type_Hunter, l.Description AS Localization, b.Book_Id,
+      hs.Jenny_Qtd, hs.Cards_Qtd FROM Hunters h
+      INNER JOIN Types_Hunter th ON th.Type_Hunter_Id = h.Type_Hunter_Id
+      INNER JOIN Hunter_Stats hs ON hs.Hunter_Id = h.Hunter_Id
+      LEFT JOIN Locations l ON l.Location_Id = h.Location_Id
+      INNER JOIN Books b ON b.Hunter_Id = h.Hunter_Id
+      WHERE h.Hunter_Id = {hunter_id}
+    ''')
     hunter = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -135,7 +143,11 @@ def fetch_hunter_auth(username):
   conn = get_db_connection()
   if conn:
     cursor = conn.cursor(dictionary=True)
-    cursor.execute(f'SELECT Hunter_Id, Username, Password FROM Hunters WHERE Username LIKE \'{username}\'')
+    cursor.execute(f'''
+      SELECT Hunter_Id, Username, Password, Email,
+      CAST(Avatar AS CHAR) AS Avatar
+      FROM Hunters WHERE Username LIKE \'{username}\'
+    ''')
     hunter = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -153,3 +165,38 @@ def fetch_hunters():
     conn.close()
     return hunters
   return []
+
+
+def update_hunter(hunter_id, content):
+  conn = get_db_connection()
+  # print(f'''
+  #     UPDATE Hunters SET Username = '{content['Username']}',
+  #     Password = '{content['Password']}', Email = '{content['Email']}',
+  #     Avatar = {content['Avatar']}
+  #     WHERE Hunter_Id = {hunter_id}
+  #   ''')
+  if conn:
+    cursor = conn.cursor()
+    query = f'''
+      UPDATE Hunters SET Username = '{content['Username']}',
+      Password = '{content['Password']}', Email = '{content['Email']}'
+    '''
+    if content['Avatar']:
+      query += f", Avatar = '{content['Avatar']}'"
+    query += f" WHERE Hunter_Id = {hunter_id}"
+    cursor.execute(query)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+def delete_hunter(hunter_id):
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor()
+    cursor.execute(f'''
+      DELETE FROM Hunters WHERE Hunter_Id = {hunter_id}
+    ''')
+    conn.commit()
+    cursor.close()
+    conn.close()
