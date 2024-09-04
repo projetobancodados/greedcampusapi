@@ -81,12 +81,12 @@ def create_hunter_book_table():
 
 def add_hunter(username, email, password):
   conn = get_db_connection()
-  db_hunter = (username, email, password)
+  db_hunter = (username, email, password, 2)
   if conn:
     cursor = conn.cursor()
     cursor.execute('''
-      INSERT INTO Hunters (Username, Email, Password) 
-      VALUES (%s, %s, %s)
+      INSERT INTO Hunters (Username, Email, Password, Type_Hunter_Id) 
+      VALUES (%s, %s, %s, %s)
     ''', db_hunter)
     conn.commit()
     cursor.close()
@@ -117,13 +117,21 @@ def add_hunter_book(hunter_id):
     conn.commit()
     cursor.close()
     conn.close()
-
+    
 
 def fetch_hunter(hunter_id):
   conn = get_db_connection()
   if conn:
     cursor = conn.cursor(dictionary=True)
-    cursor.execute(f'SELECT * FROM Hunters WHERE Hunter_Id = {hunter_id}')
+    cursor.execute(f'''
+      SELECT th.Description AS Type_Hunter, l.Description AS Localization, b.Book_Id,
+      hs.Jenny_Qtd, hs.Cards_Qtd FROM Hunters h
+      INNER JOIN Types_Hunter th ON th.Type_Hunter_Id = h.Type_Hunter_Id
+      INNER JOIN Hunter_Stats hs ON hs.Hunter_Id = h.Hunter_Id
+      LEFT JOIN Locations l ON l.Location_Id = h.Location_Id
+      INNER JOIN Books b ON b.Hunter_Id = h.Hunter_Id
+      WHERE h.Hunter_Id = {hunter_id}
+    ''')
     hunter = cursor.fetchone()
     cursor.close()
     conn.close()
