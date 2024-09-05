@@ -43,11 +43,21 @@ def get_hunter_by_username(hunter_username):
     return hunter
 
 
+# Controller to get all hunters
+def get_all_hunters():
+  if request.method == 'GET':
+    hunters = hunter_model.fetch_hunters()
+    if not hunters:
+      return {"msg": 'Error fetching hunters'}
+    return hunters
+
+
 # Controller to update hunter data
 def update_hunter_by_id(hunter_id):
   if request.method == 'PATCH':
     hunter = request.get_json()
     hunter_to_update = {
+      "Hunter_Id": int(hunter_id),
       "Username": hunter['Username'],
       "Password": hunter['Password'],
       "Email": hunter['Email'],

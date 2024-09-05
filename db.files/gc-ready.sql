@@ -3,6 +3,7 @@ DROP TABLE Books;
 DROP TABLE Hunter_Stats;
 DROP TABLE Hunters;
 DROP TABLE Locations;
+DROP TABLE Types_Hunter;
 DROP TABLE Cards;
 
 -- INSERT INTO () VALUES ();
@@ -12,13 +13,13 @@ INSERT INTO Types_Hunter (Description) VALUES ("GAME MASTER");
 INSERT INTO Types_Hunter (Description) VALUES ("NORMAL PLAYER");
 
 -- Locations
-INSERT INTO Locations (Description) VALUES ("Central Science Institute");
-INSERT INTO Locations (Description) VALUES ("Education Institute");
-INSERT INTO Locations (Description) VALUES ("Art Institute");
-INSERT INTO Locations (Description) VALUES ("Biology Institute");
-INSERT INTO Locations (Description) VALUES ("Computer Science Institute");
-INSERT INTO Locations (Description) VALUES ("Olympic Center");
-INSERT INTO Locations (Description) VALUES ("Central Library");
+INSERT INTO Locations (Description, Xaxis, Yaxis) VALUES ("Central Science Institute", 62, 37);
+INSERT INTO Locations (Description, Xaxis, Yaxis) VALUES ("Education Institute", 45, 35);
+INSERT INTO Locations (Description, Xaxis, Yaxis) VALUES ("Art Institute", 54, 36);
+INSERT INTO Locations (Description, Xaxis, Yaxis) VALUES ("Biology Institute", 58, 50);
+INSERT INTO Locations (Description, Xaxis, Yaxis) VALUES ("Computer Science Institute", 76, 35);
+INSERT INTO Locations (Description, Xaxis, Yaxis) VALUES ("Olympic Center", 85, 80);
+INSERT INTO Locations (Description, Xaxis, Yaxis) VALUES ("Central Library", 71, 37);
 
 -- Type Question : Movies, Animes, Música
 INSERT INTO Types_Question (Description) VALUES ("Anime");

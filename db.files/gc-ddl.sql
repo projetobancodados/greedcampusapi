@@ -10,8 +10,10 @@ CREATE TABLE IF NOT EXISTS Types_Hunter
 --- Criar no sistema (flask)
 CREATE TABLE IF NOT EXISTS Locations
 ( 
-  Description varchar(500) NOT NULL,  
   Location_Id INT NOT NULL AUTO_INCREMENT,  
+  Description VARCHAR(500) NOT NULL,  
+  Xaxis INT NOT NULL,
+  Yaxis INT NOT NULL,
   PRIMARY KEY (Location_Id)
 );
 

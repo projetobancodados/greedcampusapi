@@ -185,7 +185,12 @@ def fetch_hunters():
   conn = get_db_connection()
   if conn:
     cursor = conn.cursor(dictionary=True)  # Fetch rows as dictionaries
-    cursor.execute('SELECT * FROM Hunters')
+    cursor.execute('''
+      SELECT h.Hunter_Id, h.Username,
+      CAST(h.Avatar AS CHAR) AS Avatar, hs.Jenny_Qtd, hs.Cards_Qtd
+      From Hunters h
+      INNER JOIN Hunter_Stats hs ON hs.Hunter_Id = h.Hunter_Id
+    ''')
     hunters = cursor.fetchall()
     cursor.close()
     conn.close()
