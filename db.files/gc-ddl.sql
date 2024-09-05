@@ -1,5 +1,5 @@
 ---------------------------------------------- Tabelas e relacionamentos definidos
---- Criar antes
+--- Criar no sistema (flask)
 CREATE TABLE IF NOT EXISTS Types_Hunter 
 ( 
   Description VARCHAR(30) NOT NULL,  
@@ -7,12 +7,22 @@ CREATE TABLE IF NOT EXISTS Types_Hunter
   PRIMARY KEY (Type_Hunter_Id)
 ); 
 
---- Criar antes
+--- Criar no sistema (flask)
 CREATE TABLE IF NOT EXISTS Locations
 ( 
-  Description varchar(500) NOT NULL,  
   Location_Id INT NOT NULL AUTO_INCREMENT,  
+  Description VARCHAR(500) NOT NULL,  
+  Xaxis INT NOT NULL,
+  Yaxis INT NOT NULL,
   PRIMARY KEY (Location_Id)
+);
+
+--- Criar no sistema (flask)
+CREATE TABLE IF NOT EXISTS Types_Question 
+( 
+  Type_Question_Id INT NOT NULL AUTO_INCREMENT,  
+  Description varchar(30) NOT NULL,
+  PRIMARY KEY (Type_Question_Id)
 );
 
 --- Criar no sistema (flask)
@@ -25,11 +35,13 @@ CREATE TABLE IF NOT EXISTS Hunters
   Email VARCHAR(255) NOT NULL,  
   Location_Id INT,  
   Type_Hunter_Id INT, 
+  Type_Question_Id INT,
   UNIQUE (Username),
   UNIQUE(Email),
   PRIMARY KEY (Hunter_Id),
-  FOREIGN KEY (Location_Id) REFERENCES Locations (Location_Id),
-  FOREIGN KEY (Type_Hunter_Id) REFERENCES Types_Hunter (Type_Hunter_Id)
+  FOREIGN KEY (Location_Id) REFERENCES Locations (Location_Id) ON DELETE CASCADE,
+  FOREIGN KEY (Type_Hunter_Id) REFERENCES Types_Hunter (Type_Hunter_Id) ON DELETE CASCADE,
+  FOREIGN KEY (Type_Question_Id) REFERENCES Types_Question (Type_Question_Id) ON DELETE CASCADE
 ); 
 
 --- Criar no sistema (flask)
@@ -40,7 +52,7 @@ CREATE TABLE IF NOT EXISTS Hunter_Stats
   Cards_Qtd INT,  
   Hunter_Id INT NOT NULL,
   PRIMARY KEY (Hunter_Stats_Id),
-  FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id)
+  FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id) ON DELETE CASCADE
 );
 
 --- Criar no sistema (flask)
@@ -49,11 +61,11 @@ CREATE TABLE IF NOT EXISTS Books
   Book_Id INT NOT NULL AUTO_INCREMENT,
   Hunter_Id INT NOT NULL,
   PRIMARY KEY (Book_Id),
-  FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id)
+  FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id) ON DELETE CASCADE
 );
 
 -- Criar antes
-CREATE TABLE Card_Difficulty 
+CREATE TABLE IF NOT EXISTS Card_Difficulty 
 ( 
  Difficulty_Code INT NOT NULL AUTO_INCREMENT,  
  Difficulty_Description Varchar(10),
@@ -61,34 +73,32 @@ CREATE TABLE Card_Difficulty
 ); 
 
 --- Criar no sistema (flask)
-CREATE TABLE Cards 
+CREATE TABLE IF NOT EXISTS Cards 
 ( 
- Title Varchar(500) NOT NULL,  
- Quantity INT NOT NULL,  
- Description varchar(500) NOT NULL,  
- Card_Id INT NOT NULL AUTO_INCREMENT,  
- Card_Img BLOB,  
- Slot_Number Varchar(20),
- Difficulty_Code INT NOT NULL,  
- PRIMARY KEY (Card_Id),
- FOREIGN KEY (Difficulty_Code) REFERENCES Card_Difficulty (Difficulty_Code)
+  Title Varchar(500) NOT NULL,  
+  Quantity INT NOT NULL,  
+  Description varchar(500) NOT NULL,  
+  Card_Id INT NOT NULL AUTO_INCREMENT,  
+  Card_Img LONGBLOB,  
+  Slot_Number Varchar(20),
+  Difficulty_Code INT NOT NULL,  
+  PRIMARY KEY (Card_Id),
+  FOREIGN KEY (Difficulty_Code) REFERENCES Card_Difficulty (Difficulty_Code) ON DELETE CASCADE
 ); 
 
+-- Criar no sistema (flask)
+CREATE TABLE IF NOT EXISTS Question 
+( 
+  Question_Id INT NOT NULL AUTO_INCREMENT,  
+  Statement LONGTEXT,  
+  Type_Question_Id INT,
+  Difficulty_Code INT,
+  PRIMARY KEY (Question_Id),
+  FOREIGN KEY (Type_Question_Id) REFERENCES Types_Question (Type_Question_Id) ON DELETE CASCADE,
+  FOREIGN KEY (Difficulty_Code) REFERENCES Card_Difficulty (Difficulty_Code) ON DELETE CASCADE
+);
 ---------------------------------------------- Corrigir a partir daqui
-CREATE TABLE question 
-( 
- statement text,  
- id INT PRIMARY KEY,  
- difficulty_code int,  
- idcard INT,  
- idtype_question INT,  
-); 
-
-CREATE TABLE Type_Question 
-( 
- Type_Description varchar(30) NOT NULL,  
- id INT PRIMARY KEY,  
-); 
+  
 
 CREATE TABLE answer 
 ( 
@@ -118,10 +128,7 @@ CREATE TABLE card_challenge_answer
  idanswer INT,  
 ); 
 
-ALTER TABLE question ADD FOREIGN KEY(difficulty_code) REFERENCES card_difficulty (difficulty_code);
-ALTER TABLE question ADD FOREIGN KEY(idtype_question) REFERENCES type_question (id);
-ALTER TABLE hunter_stats ADD FOREIGN KEY(idhunter) REFERENCES hunter (id);
-ALTER TABLE card_difficulty ADD FOREIGN KEY(idcard) REFERENCES card (id);
+
 ALTER TABLE book_cards ADD FOREIGN KEY(idcard) REFERENCES card (id);
 ALTER TABLE book_cards ADD FOREIGN KEY(idbook) REFERENCES book (id);
 ALTER TABLE card_challenge_answer ADD FOREIGN KEY(idcard_challenge) REFERENCES card_challenge (id);

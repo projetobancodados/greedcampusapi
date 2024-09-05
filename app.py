@@ -1,18 +1,33 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
-from routes import hunter_routes, auth_routes, cards_routes  # Importar o novo blueprint de cards
-from models import hunter_model, cards_model  # Importar o modelo de Cards
+
+from routes import hunter_routes, auth_routes, location_routes, question_routes, cards_routes
+
+from models import hunter_model, location_model, question_model, cards_model
+
 
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = 'your secret key'  # Chave secreta para JWT
-app.register_blueprint(hunter_routes.hunter)  # Registra o blueprint de Hunter
-app.register_blueprint(auth_routes.auth)  # Registra o blueprint de Auth
+app.config['JWT_SECRET_KEY'] = 'your secret key'
+app.register_blueprint(hunter_routes.hunter)
+app.register_blueprint(auth_routes.auth)
+app.register_blueprint(location_routes.location)
+app.register_blueprint(question_routes.question)
 app.register_blueprint(cards_routes.card)  # Registra o novo blueprint de Cards
+# app.secret_key = 'supersecretkey'  # Needed for flash messages
 
 # Inicializa o JWT Manager
 jwt = JWTManager(app)
 
-# Inicializar as tabelas do banco de dados
+# Initialize the database
+# Question
+question_model.create_types_question_table()
+question_model.create_question_table()
+
+# Location
+location_model.create_location_table()
+
+# Hunter
+hunter_model.create_types_hunter_table()
 hunter_model.create_hunters_table()
 hunter_model.create_hunter_stats_table()
 hunter_model.create_hunter_book_table()
