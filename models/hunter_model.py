@@ -1,9 +1,8 @@
-# models/database.py
-
 import mysql.connector
 from mysql.connector import Error
 
 from config import DB_CONFIG
+
 
 # Connect to MySQL database
 def get_db_connection():
@@ -29,16 +28,35 @@ def create_hunters_table():
           Email VARCHAR(255) NOT NULL,  
           Location_Id INT,  
           Type_Hunter_Id INT, 
+          Type_Question_Id INT,
           UNIQUE (Username),
           UNIQUE(Email),
           PRIMARY KEY (Hunter_Id),
           FOREIGN KEY (Location_Id) REFERENCES Locations (Location_Id) ON DELETE CASCADE,
-          FOREIGN KEY (Type_Hunter_Id) REFERENCES Types_Hunter (Type_Hunter_Id) ON DELETE CASCADE
+          FOREIGN KEY (Type_Hunter_Id) REFERENCES Types_Hunter (Type_Hunter_Id) ON DELETE CASCADE,
+          FOREIGN KEY (Type_Question_Id) REFERENCES Types_Question (Type_Question_Id) ON DELETE CASCADE
         ); 
       ''')
       conn.commit()
       cursor.close()
       conn.close()
+
+
+def create_types_hunter_table():
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor()
+    cursor.execute('''
+      CREATE TABLE IF NOT EXISTS Types_Hunter 
+      ( 
+        Description VARCHAR(30) NOT NULL,  
+        Type_Hunter_Id INT NOT NULL AUTO_INCREMENT, 
+        PRIMARY KEY (Type_Hunter_Id)
+      );
+    ''')
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 
 def create_hunter_stats_table():
@@ -81,12 +99,13 @@ def create_hunter_book_table():
 
 def add_hunter(username, email, password):
   conn = get_db_connection()
-  db_hunter = (username, email, password, 2)
+  db_hunter = (username, email, password, 1, 2, 1)
   if conn:
     cursor = conn.cursor()
     cursor.execute('''
-      INSERT INTO Hunters (Username, Email, Password, Type_Hunter_Id) 
-      VALUES (%s, %s, %s, %s)
+      INSERT INTO Hunters (Username, Email, 
+      Password, Location_Id, Type_Hunter_Id, Type_Question_Id) 
+      VALUES (%s, %s, %s, %s, %s, %s)
     ''', db_hunter)
     conn.commit()
     cursor.close()
@@ -124,11 +143,13 @@ def fetch_hunter(hunter_id):
   if conn:
     cursor = conn.cursor(dictionary=True)
     cursor.execute(f'''
-      SELECT th.Description AS Type_Hunter, l.Description AS Localization, b.Book_Id,
-      hs.Jenny_Qtd, hs.Cards_Qtd FROM Hunters h
+      SELECT h.Type_Hunter_Id, h.Location_Id, h.Type_Question_Id,
+      hs.Jenny_Qtd, hs.Cards_Qtd, b.Book_Id
+      FROM Hunters h
       INNER JOIN Types_Hunter th ON th.Type_Hunter_Id = h.Type_Hunter_Id
       INNER JOIN Hunter_Stats hs ON hs.Hunter_Id = h.Hunter_Id
-      LEFT JOIN Locations l ON l.Location_Id = h.Location_Id
+      INNER JOIN Locations l ON l.Location_Id = h.Location_Id
+      INNER JOIN Types_Question tq ON tq.Type_Question_Id = h.Type_Question_Id
       INNER JOIN Books b ON b.Hunter_Id = h.Hunter_Id
       WHERE h.Hunter_Id = {hunter_id}
     ''')
@@ -145,8 +166,13 @@ def fetch_hunter_auth(username):
     cursor = conn.cursor(dictionary=True)
     cursor.execute(f'''
       SELECT Hunter_Id, Username, Password, Email,
-      CAST(Avatar AS CHAR) AS Avatar
-      FROM Hunters WHERE Username LIKE \'{username}\'
+      CAST(Avatar AS CHAR) AS Avatar,
+      l.Location_Id AS Location,
+      tq.Type_Question_Id AS Type_Question
+      FROM Hunters h 
+      INNER JOIN Locations l ON l.Location_Id = h.Location_Id
+      INNER JOIN Types_Question tq ON tq.Type_Question_Id = h.Type_Question_Id
+      WHERE Username LIKE \'{username}\'
     ''')
     hunter = cursor.fetchone()
     cursor.close()
@@ -169,12 +195,6 @@ def fetch_hunters():
 
 def update_hunter(hunter_id, content):
   conn = get_db_connection()
-  # print(f'''
-  #     UPDATE Hunters SET Username = '{content['Username']}',
-  #     Password = '{content['Password']}', Email = '{content['Email']}',
-  #     Avatar = {content['Avatar']}
-  #     WHERE Hunter_Id = {hunter_id}
-  #   ''')
   if conn:
     cursor = conn.cursor()
     query = f'''
@@ -183,7 +203,15 @@ def update_hunter(hunter_id, content):
     '''
     if content['Avatar']:
       query += f", Avatar = '{content['Avatar']}'"
+    
+    if content['Location']:
+      query += f", Location_Id = {content['Location']}"
+      
+    if content['Type_Question']:
+      query += f", Type_Question_Id = {content['Type_Question']}"
+      
     query += f" WHERE Hunter_Id = {hunter_id}"
+    
     cursor.execute(query)
     conn.commit()
     cursor.close()

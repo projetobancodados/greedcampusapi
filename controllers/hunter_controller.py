@@ -3,7 +3,6 @@ from models import hunter_model
 from flask_jwt_extended import decode_token
 
 
-
 # Controller to add a hunter
 def register_hunter():
   if request.method == 'POST':
@@ -47,14 +46,14 @@ def get_hunter_by_username(hunter_username):
 # Controller to update hunter data
 def update_hunter_by_id(hunter_id):
   if request.method == 'PATCH':
-    # if 'Avatar' not in request.files:
-    #   return {'msg': 'No file part'}
     hunter = request.get_json()
     hunter_to_update = {
       "Username": hunter['Username'],
       "Password": hunter['Password'],
       "Email": hunter['Email'],
-      "Avatar": hunter['Avatar']
+      "Avatar": hunter['Avatar'],
+      "Location": hunter['Location'],
+      "Type_Question": hunter['Type_Question']
     }
     hunter_model.update_hunter(hunter_id, hunter_to_update)
     if not hunter_to_update:
