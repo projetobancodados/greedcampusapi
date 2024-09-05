@@ -35,6 +35,16 @@ def get_hunter_by_username(hunter_username):
   except Exception as e:
     return json.dumps({"msg": e.msg})
 
+
+# Get all hunters
+@hunter.route('/hunter/all', methods=['GET'])
+@cross_origin()
+def get_all_hunters():
+  try:
+    return hunter_controller.get_all_hunters()
+  except Exception as e:
+    return json.dumps({"msg": e.msg})
+ 
  
 # Update hunter by id
 @hunter.route('/hunter/update/<hunter_id>', methods=['PATCH'])
