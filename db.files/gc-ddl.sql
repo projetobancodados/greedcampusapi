@@ -117,7 +117,9 @@ CREATE TABLE card_challenge
 CREATE TABLE book_cards 
 ( 
  idcard INT PRIMARY KEY,  
- idbook INT,  
+ idbook INT,
+ FOREIGN KEY (idcard) REFERENCES Cards(Card_Id),
+ FOREIGN KEY (idbook) REFERENCES Books(Book_Id)
 ); 
 
 CREATE TABLE card_challenge_answer 
