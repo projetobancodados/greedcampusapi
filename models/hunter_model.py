@@ -190,6 +190,7 @@ def fetch_hunters():
       CAST(h.Avatar AS CHAR) AS Avatar, hs.Jenny_Qtd, hs.Cards_Qtd
       From Hunters h
       INNER JOIN Hunter_Stats hs ON hs.Hunter_Id = h.Hunter_Id
+      ORDER BY hs.Cards_Qtd DESC, hs.Jenny_Qtd DESC
     ''')
     hunters = cursor.fetchall()
     cursor.close()

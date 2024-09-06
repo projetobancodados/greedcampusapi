@@ -8,6 +8,13 @@
 -- DROP TABLE Types_Question;
 -- DROP TABLE Cards;
 
+-- Select all hunters and sort descending by cards number, then jenny count
+-- SELECT h.Hunter_Id, h.Username,
+-- CAST(h.Avatar AS CHAR) AS Avatar, hs.Jenny_Qtd, hs.Cards_Qtd
+-- From Hunters h
+-- INNER JOIN Hunter_Stats hs ON hs.Hunter_Id = h.Hunter_Id
+-- ORDER BY hs.Cards_Qtd DESC, hs.Jenny_Qtd DESC;
+
 -- INSERT INTO () VALUES ();
 
 -- Type_Hunter
