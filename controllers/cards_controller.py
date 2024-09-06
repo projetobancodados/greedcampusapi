@@ -13,8 +13,8 @@ def get_available_cards():
     if request.method == 'GET':
         available_cards = card_model.get_available_cards()
         if not available_cards:
-            return jsonify({"msg": "No cards available."}), 404
-        return jsonify(available_cards), 200
+            return {"game_cards": []}
+        return {"game_cards": available_cards}
 
 # Controller to add a card to the Hunter's book
 def add_card_to_book(hunter_id):
@@ -22,7 +22,7 @@ def add_card_to_book(hunter_id):
     Adiciona uma carta ao Book do Hunter, se houver quantidade disponível.
     """
     if request.method == 'POST':
-        card_id = request.json.get('card_id')
+        card_id = request.json.get('Card_Id')
 
         if not card_id:
             return jsonify({"msg": "Card ID is required."}), 400
@@ -60,9 +60,9 @@ def get_cards_in_book(hunter_id):
         cards_in_book = card_model.get_cards_in_book(hunter_id)
 
         if not cards_in_book:
-            return jsonify({"msg": f"Hunter {hunter_id} has no cards in their book."}), 404
+            return {"hunter_cards": []}
 
-        return jsonify(cards_in_book), 200
+        return {"hunter_cards": cards_in_book}
 
 # Controller to buy a card using Jenny and a question
 def buy_card_with_question(hunter_id):

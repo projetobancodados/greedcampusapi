@@ -138,20 +138,34 @@ def add_hunter_book(hunter_id):
     conn.close()
     
 
+def create_all_hunter_info_view():
+  conn = get_db_connection()
+  if conn:
+      cursor = conn.cursor()
+      cursor.execute('''
+        CREATE OR REPLACE VIEW All_Hunter_Info AS
+        SELECT h.Hunter_Id, h.Type_Hunter_Id, h.Location_Id, h.Type_Question_Id,
+        hs.Jenny_Qtd, hs.Cards_Qtd, b.Book_Id
+        FROM Hunters h
+        INNER JOIN Types_Hunter th ON th.Type_Hunter_Id = h.Type_Hunter_Id
+        INNER JOIN Hunter_Stats hs ON hs.Hunter_Id = h.Hunter_Id
+        INNER JOIN Locations l ON l.Location_Id = h.Location_Id
+        INNER JOIN Types_Question tq ON tq.Type_Question_Id = h.Type_Question_Id
+        INNER JOIN Books b ON b.Hunter_Id = h.Hunter_Id;
+      ''')
+      conn.commit()
+      cursor.close()
+      conn.close()
+
+
 def fetch_hunter(hunter_id):
+  create_all_hunter_info_view()
   conn = get_db_connection()
   if conn:
     cursor = conn.cursor(dictionary=True)
     cursor.execute(f'''
-      SELECT h.Type_Hunter_Id, h.Location_Id, h.Type_Question_Id,
-      hs.Jenny_Qtd, hs.Cards_Qtd, b.Book_Id
-      FROM Hunters h
-      INNER JOIN Types_Hunter th ON th.Type_Hunter_Id = h.Type_Hunter_Id
-      INNER JOIN Hunter_Stats hs ON hs.Hunter_Id = h.Hunter_Id
-      INNER JOIN Locations l ON l.Location_Id = h.Location_Id
-      INNER JOIN Types_Question tq ON tq.Type_Question_Id = h.Type_Question_Id
-      INNER JOIN Books b ON b.Hunter_Id = h.Hunter_Id
-      WHERE h.Hunter_Id = {hunter_id}
+      SELECT * FROM All_Hunter_Info
+      WHERE Hunter_Id = {hunter_id}
     ''')
     hunter = cursor.fetchone()
     cursor.close()
@@ -168,10 +182,12 @@ def fetch_hunter_auth(username):
       SELECT Hunter_Id, Username, Password, Email,
       CAST(Avatar AS CHAR) AS Avatar,
       l.Location_Id AS Location,
-      tq.Type_Question_Id AS Type_Question
+      tq.Type_Question_Id AS Type_Question,
+      th.Type_Hunter_Id AS Type_Hunter
       FROM Hunters h 
       INNER JOIN Locations l ON l.Location_Id = h.Location_Id
       INNER JOIN Types_Question tq ON tq.Type_Question_Id = h.Type_Question_Id
+      INNER JOIN Types_Hunter th ON th.Type_Hunter_Id = h.Type_Hunter_Id
       WHERE Username LIKE \'{username}\'
     ''')
     hunter = cursor.fetchone()

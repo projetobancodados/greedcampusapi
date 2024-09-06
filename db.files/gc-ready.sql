@@ -165,7 +165,11 @@ INSERT INTO Cards (Title, Quantity, Description, Slot_Number, Difficulty_Code) V
 INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o verdadeiro nome de L em "Death Note"?', 1, 1);
 
 -- Music Questions - Type_Question_Id (2)
-INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ("", 2, 1);
+-- INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ("", 2, 1);
 
 -- Movie Questions - Type_Question_Id (3)
-INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ("", 3, 1);
+-- INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ("", 3, 1);
+
+---------------------- MOCK DATA ------------------------
+-- Insert some cards on someone's Book
+-- INSERT INTO Books_Cards (Book_Id, Card_Id) VALUES ();

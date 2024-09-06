@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS Books
   FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id) ON DELETE CASCADE
 );
 
--- Criar antes
+-- Criar no sistema (flask)
 CREATE TABLE IF NOT EXISTS Cards_Difficulty 
 ( 
  Difficulty_Code INT NOT NULL AUTO_INCREMENT,  
@@ -87,6 +87,16 @@ CREATE TABLE IF NOT EXISTS Cards
 ); 
 
 -- Criar no sistema (flask)
+CREATE TABLE Books_Cards 
+( 
+  Card_Id INT NOT NULL,  
+  Book_Id INT NOT NULL,
+  PRIMARY KEY (Card_Id, Book_Id),
+  FOREIGN KEY (Card_Id) REFERENCES Cards(Card_Id),
+  FOREIGN KEY (Book_Id) REFERENCES Books(Book_Id)
+);
+
+-- Criar no sistema (flask)
 CREATE TABLE IF NOT EXISTS Questions 
 ( 
   Question_Id INT NOT NULL AUTO_INCREMENT,  
@@ -97,9 +107,23 @@ CREATE TABLE IF NOT EXISTS Questions
   FOREIGN KEY (Type_Question_Id) REFERENCES Types_Question (Type_Question_Id) ON DELETE CASCADE,
   FOREIGN KEY (Difficulty_Code) REFERENCES Cards_Difficulty (Difficulty_Code) ON DELETE CASCADE
 );
----------------------------------------------- Corrigir a partir daqui
-  
 
+---------------------------------------------- Views
+CREATE OR REPLACE VIEW IF NOT EXISTS All_Hunter_Info AS
+SELECT h.Hunter_Id, h.Type_Hunter_Id, h.Location_Id, h.Type_Question_Id,
+hs.Jenny_Qtd, hs.Cards_Qtd, b.Book_Id
+FROM Hunters h
+INNER JOIN Types_Hunter th ON th.Type_Hunter_Id = h.Type_Hunter_Id
+INNER JOIN Hunter_Stats hs ON hs.Hunter_Id = h.Hunter_Id
+INNER JOIN Locations l ON l.Location_Id = h.Location_Id
+INNER JOIN Types_Question tq ON tq.Type_Question_Id = h.Type_Question_Id
+INNER JOIN Books b ON b.Hunter_Id = h.Hunter_Id;
+
+
+---------------------------------------------- Procedures
+
+
+---------------------------------------------- Corrigir a partir daqui
 CREATE TABLE answer 
 ( 
  content text,  
@@ -112,16 +136,7 @@ CREATE TABLE card_challenge
  idcard INT,  
 ); 
 
-
-
-CREATE TABLE book_cards 
-( 
- idcard INT PRIMARY KEY,  
- idbook INT,
- FOREIGN KEY (idcard) REFERENCES Cards(Card_Id),
- FOREIGN KEY (idbook) REFERENCES Books(Book_Id)
-); 
-
+ 
 CREATE TABLE card_challenge_answer 
 ( 
  idcard_challenge INT PRIMARY KEY,  
@@ -129,7 +144,5 @@ CREATE TABLE card_challenge_answer
 ); 
 
 
-ALTER TABLE book_cards ADD FOREIGN KEY(idcard) REFERENCES card (id);
-ALTER TABLE book_cards ADD FOREIGN KEY(idbook) REFERENCES book (id);
 ALTER TABLE card_challenge_answer ADD FOREIGN KEY(idcard_challenge) REFERENCES card_challenge (id);
 ALTER TABLE card_challenge_answer ADD FOREIGN KEY(idanswer) REFERENCES answer (id);

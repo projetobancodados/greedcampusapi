@@ -17,7 +17,7 @@ def get_db_connection():
 class CardModel:
     """
     Classe responsável por gerenciar todas as transações relacionadas à entidade Cards.
-    Interage com a tabela `book_cards`, que mapeia a relação entre Books (Hunter) e suas Cards.
+    Interage com a tabela `Books_Cards`, que mapeia a relação entre Books (Hunter) e suas Cards.
     """
 
     def __init__(self):
@@ -42,7 +42,7 @@ class CardModel:
     def add_card_to_book(self, hunter_id, card_id):
         """
         Adiciona uma carta ao Book do jogador (hunter_id) se houver quantidade disponível.
-        Atualiza a tabela de `book_cards` para associar a carta ao Book (idbook) do Hunter.
+        Atualiza a tabela de `Books_Cards` para associar a carta ao Book (idbook) do Hunter.
         Diminui a quantidade da carta no banco de dados se adicionada com sucesso.
         """
         if self.conn:
@@ -55,9 +55,9 @@ class CardModel:
                 # Diminuir a quantidade da carta no sistema
                 cursor.execute('UPDATE Cards SET Quantity = Quantity - 1 WHERE Card_Id = %s', (card_id,))
 
-                # Associar a carta ao Book do Hunter na tabela book_cards
+                # Associar a carta ao Book do Hunter na tabela Books_Cards
                 cursor.execute('''
-                    INSERT INTO book_cards (idcard, idbook)
+                    INSERT INTO Books_Cards (idcard, idbook)
                     SELECT %s, Book_Id FROM Books WHERE Hunter_Id = %s
                 ''', (card_id, hunter_id))
 
@@ -82,9 +82,9 @@ class CardModel:
             elif card and card['Quantity'] == 0:
                 return {"msg": "A última unidade desta carta não pode ser removida."}
             else:
-                # Remover a carta do Book do Hunter (via tabela associativa book_cards)
+                # Remover a carta do Book do Hunter (via tabela associativa Books_Cards)
                 cursor.execute('''
-                    DELETE FROM book_cards 
+                    DELETE FROM Books_Cards 
                     WHERE idcard = %s AND idbook = (SELECT Book_Id FROM Books WHERE Hunter_Id = %s)
                 ''', (card_id, hunter_id))
 
@@ -95,21 +95,22 @@ class CardModel:
             cursor.close()
 
     def get_cards_in_book(self, hunter_id):
-        """
-        Retorna todas as cartas que o Hunter (hunter_id) possui em seu Book.
-        Consulta a tabela associativa `book_cards` para verificar as cartas associadas ao Book de um Hunter.
-        """
-        if self.conn:
-            cursor = self.conn.cursor(dictionary=True)
-            cursor.execute('''
-                SELECT c.* FROM Cards c
-                JOIN book_cards bc ON c.Card_Id = bc.idcard
-                JOIN Books b ON bc.idbook = b.Book_Id
-                WHERE b.Hunter_Id = %s
-            ''', (hunter_id,))
-            cards = cursor.fetchall()
-            cursor.close()
-            return cards
+      print(hunter_id)
+      """
+      Retorna todas as cartas que o Hunter (hunter_id) possui em seu Book.
+      Consulta a tabela associativa `Books_Cards` para verificar as cartas associadas ao Book de um Hunter.
+      """
+      if self.conn:
+          cursor = self.conn.cursor(dictionary=True)
+          cursor.execute('''
+              SELECT c.* FROM Cards c
+              JOIN Books_Cards bc ON c.Card_Id = bc.Card_Id
+              JOIN Books b ON bc.Book_Id = b.Book_Id
+              WHERE b.Hunter_Id = %s
+          ''', (hunter_id,))
+          cards = cursor.fetchall()
+          cursor.close()
+          return cards
 
     def buy_card_with_question(self, hunter_id, card_id, jenny_paid, answer):
         """
@@ -150,7 +151,7 @@ class CardModel:
 
                 # Verificar se o Hunter de origem realmente possui a carta
                 cursor.execute('''
-                    SELECT idbook FROM book_cards 
+                    SELECT idbook FROM Books_Cards 
                     WHERE idcard = %s AND idbook = (SELECT Book_Id FROM Books WHERE Hunter_Id = %s)
                 ''', (card_id, hunter_id_from))
                 if cursor.fetchone() is None:
@@ -158,13 +159,13 @@ class CardModel:
 
                 # Remover carta do Hunter de origem
                 cursor.execute('''
-                    DELETE FROM book_cards 
+                    DELETE FROM Books_Cards 
                     WHERE idcard = %s AND idbook = (SELECT Book_Id FROM Books WHERE Hunter_Id = %s)
                 ''', (card_id, hunter_id_from))
 
                 # Adicionar carta ao Hunter de destino
                 cursor.execute('''
-                    INSERT INTO book_cards (idcard, idbook)
+                    INSERT INTO Books_Cards (idcard, idbook)
                     SELECT %s, Book_Id FROM Books WHERE Hunter_Id = %s
                 ''', (card_id, hunter_id_to))
 
@@ -188,6 +189,25 @@ class CardModel:
             self.conn.close()
 
 #criação das tables necessárias para execução de cards
+def create_cards_difficulty_table():
+  """
+  Cria a tabela Cards_Difficulty no banco de dados
+  """
+  conn = get_db_connection()  # Inicializa a conexão com o banco de dados
+  if conn:
+      cursor = conn.cursor()
+      cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Cards_Difficulty 
+        ( 
+        Difficulty_Code INT NOT NULL AUTO_INCREMENT,  
+        Difficulty_Description Varchar(10),
+        PRIMARY KEY (Difficulty_Code)
+        );
+      ''')
+      conn.commit()  # Confirma a criação da tabela
+      cursor.close()
+      conn.close()
+
 
 def create_cards_table():
     """
@@ -217,19 +237,20 @@ def create_cards_table():
 
 def create_book_cards_table():
     """
-    Cria a tabela associativa book_cards entre Books e Cards.
+    Cria a tabela associativa Books_Cards entre Books e Cards.
     """
     conn = get_db_connection()  # Inicializa a conexão com o banco de dados
     if conn:
         cursor = conn.cursor()
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS book_cards (
-                idcard INT,
-                idbook INT,
-                PRIMARY KEY (idcard, idbook),
-                FOREIGN KEY (idcard) REFERENCES Cards(Card_Id),
-                FOREIGN KEY (idbook) REFERENCES Books(Book_Id)
-            );
+          CREATE TABLE IF NOT EXISTS Books_Cards 
+          ( 
+            Card_Id INT NOT NULL,  
+            Book_Id INT NOT NULL,
+            PRIMARY KEY (Card_Id, Book_Id),
+            FOREIGN KEY (Card_Id) REFERENCES Cards(Card_Id),
+            FOREIGN KEY (Book_Id) REFERENCES Books(Book_Id)
+          );
         ''')
         conn.commit()  # Confirma a criação da tabela associativa
         cursor.close()
