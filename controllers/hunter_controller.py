@@ -63,7 +63,8 @@ def update_hunter_by_id(hunter_id):
       "Email": hunter['Email'],
       "Avatar": hunter['Avatar'],
       "Location": hunter['Location'],
-      "Type_Question": hunter['Type_Question']
+      "Type_Question": hunter['Type_Question'],
+      "Type_Hunter": hunter['Type_Hunter']
     }
     hunter_model.update_hunter(hunter_id, hunter_to_update)
     if not hunter_to_update:

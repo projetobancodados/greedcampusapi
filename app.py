@@ -19,6 +19,9 @@ app.register_blueprint(cards_routes.card)  # Registra o novo blueprint de Cards
 jwt = JWTManager(app)
 
 # Initialize the database
+
+cards_model.create_cards_difficulty_table() # Inicializa a tabela Cards_Difficulty
+
 # Question
 question_model.create_types_question_table()
 question_model.create_question_table()
@@ -31,6 +34,9 @@ hunter_model.create_types_hunter_table()
 hunter_model.create_hunters_table()
 hunter_model.create_hunter_stats_table()
 hunter_model.create_hunter_book_table()
+
+# Hunter views
+hunter_model.create_all_hunter_info_view()
 
 # Se precisar inicializar a tabela de Cards
 cards_model.create_cards_table()  # Inicializa a tabela de Cards no banco
