@@ -25,8 +25,8 @@ INSERT INTO Locations (Description, Xaxis, Yaxis) VALUES ("Central Library", 71,
 
 -- Type Question : Movies, Animes, Música
 INSERT INTO Types_Question (Description) VALUES ("Anime");
-INSERT INTO Types_Question (Description) VALUES ("Música");
-INSERT INTO Types_Question (Description) VALUES ("Filme");
+INSERT INTO Types_Question (Description) VALUES ("Music");
+INSERT INTO Types_Question (Description) VALUES ("Movie");
 
 -- Card Difficulty
 INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("SS");
@@ -44,3 +44,22 @@ INSERT INTO Cards (Title, Quantity, Description, Slot_Number, Difficulty_Code) V
 INSERT INTO Cards (Title, Quantity, Description, Slot_Number, Difficulty_Code) VALUES ("Patch of Forest", 3, "The entrance to the giant forest called the Mountain god's garden where many unique endemic species live. They are all tame and friendly.", "001", 1);
 
 -- Question 
+
+-- 1  - 11  : Difficulty 1
+-- 12 - 22  : Difficulty 2
+-- 23 - 33  : Difficulty 3
+-- 34 - 44  : Difficulty 4
+-- 45 - 55  : Difficulty 5
+-- 56 - 66  : Difficulty 6
+-- 67 - 77  : Difficulty 7
+-- 78 - 88  : Difficulty 8
+-- 89 - 100 : Difficulty 9
+
+-- Anime Questions - Type_Question_Id (1)
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ("", 1, 1);
+
+-- Music Questions - Type_Question_Id (2)
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ("", 2, 1);
+
+-- Movie Questions - Type_Question_Id (3)
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ("", 3, 1);
