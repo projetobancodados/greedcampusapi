@@ -4,6 +4,8 @@ DROP TABLE Hunter_Stats;
 DROP TABLE Hunters;
 DROP TABLE Locations;
 DROP TABLE Types_Hunter;
+DROP TABLE Question;
+DROP TABLE Types_Question;
 DROP TABLE Cards;
 
 -- INSERT INTO () VALUES ();
@@ -27,15 +29,15 @@ INSERT INTO Types_Question (Description) VALUES ("Música");
 INSERT INTO Types_Question (Description) VALUES ("Filme");
 
 -- Card Difficulty
-INSERT INTO Card_Difficulty (Difficulty_Description) VALUES ("SS");
-INSERT INTO Card_Difficulty (Difficulty_Description) VALUES ("A");
-INSERT INTO Card_Difficulty (Difficulty_Description) VALUES ("B");
-INSERT INTO Card_Difficulty (Difficulty_Description) VALUES ("C");
-INSERT INTO Card_Difficulty (Difficulty_Description) VALUES ("D");
-INSERT INTO Card_Difficulty (Difficulty_Description) VALUES ("E");
-INSERT INTO Card_Difficulty (Difficulty_Description) VALUES ("F");
-INSERT INTO Card_Difficulty (Difficulty_Description) VALUES ("G");
-INSERT INTO Card_Difficulty (Difficulty_Description) VALUES ("H");
+INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("SS");
+INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("A");
+INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("B");
+INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("C");
+INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("D");
+INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("E");
+INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("F");
+INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("G");
+INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("H");
 
 -- Cards (000 - 099)
 INSERT INTO Cards (Title, Quantity, Description, Slot_Number, Difficulty_Code) VALUES ("Ruler's Blessings", 1, "A Castle given as a prize for winning the contest, town with population 10.000 included. It's Residents will live according to whatever laws and commands you issue.", "000", 1);

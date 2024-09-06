@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS Books
 );
 
 -- Criar antes
-CREATE TABLE IF NOT EXISTS Card_Difficulty 
+CREATE TABLE IF NOT EXISTS Cards_Difficulty 
 ( 
  Difficulty_Code INT NOT NULL AUTO_INCREMENT,  
  Difficulty_Description Varchar(10),
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS Cards
   Slot_Number Varchar(20),
   Difficulty_Code INT NOT NULL,  
   PRIMARY KEY (Card_Id),
-  FOREIGN KEY (Difficulty_Code) REFERENCES Card_Difficulty (Difficulty_Code) ON DELETE CASCADE
+  FOREIGN KEY (Difficulty_Code) REFERENCES Cards_Difficulty (Difficulty_Code) ON DELETE CASCADE
 ); 
 
 -- Criar no sistema (flask)
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS Question
   Difficulty_Code INT,
   PRIMARY KEY (Question_Id),
   FOREIGN KEY (Type_Question_Id) REFERENCES Types_Question (Type_Question_Id) ON DELETE CASCADE,
-  FOREIGN KEY (Difficulty_Code) REFERENCES Card_Difficulty (Difficulty_Code) ON DELETE CASCADE
+  FOREIGN KEY (Difficulty_Code) REFERENCES Cards_Difficulty (Difficulty_Code) ON DELETE CASCADE
 );
 ---------------------------------------------- Corrigir a partir daqui
   

@@ -197,17 +197,18 @@ def create_cards_table():
     if conn:
         cursor = conn.cursor()
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Cards (
-                Card_Id INT NOT NULL AUTO_INCREMENT,
-                Title VARCHAR(500) NOT NULL,
-                Quantity INT NOT NULL,
-                Description VARCHAR(500) NOT NULL,
-                Card_Img BLOB,
-                Slot_Number VARCHAR(20),
-                Difficulty_Code INT NOT NULL,
-                PRIMARY KEY (Card_Id),
-                FOREIGN KEY (Difficulty_Code) REFERENCES Card_Difficulty (Difficulty_Code)
-            );
+          CREATE TABLE IF NOT EXISTS Cards 
+          ( 
+            Title Varchar(500) NOT NULL,  
+            Quantity INT NOT NULL,  
+            Description varchar(500) NOT NULL,  
+            Card_Id INT NOT NULL AUTO_INCREMENT,  
+            Card_Img LONGBLOB,  
+            Slot_Number Varchar(20),
+            Difficulty_Code INT NOT NULL,  
+            PRIMARY KEY (Card_Id),
+            FOREIGN KEY (Difficulty_Code) REFERENCES Cards_Difficulty (Difficulty_Code) ON DELETE CASCADE
+          );
         ''')
         conn.commit()  # Confirma a criação da tabela
         cursor.close()

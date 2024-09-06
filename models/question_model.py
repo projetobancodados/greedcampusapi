@@ -27,7 +27,7 @@ def create_question_table():
         Difficulty_Code INT,
         PRIMARY KEY (Question_Id),
         FOREIGN KEY (Type_Question_Id) REFERENCES Types_Question (Type_Question_Id) ON DELETE CASCADE,
-        FOREIGN KEY (Difficulty_Code) REFERENCES Card_Difficulty (Difficulty_Code) ON DELETE CASCADE
+        FOREIGN KEY (Difficulty_Code) REFERENCES Cards_Difficulty (Difficulty_Code) ON DELETE CASCADE
       );
     ''')
     conn.commit()
