@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS Cards
 ); 
 
 -- Criar no sistema (flask)
-CREATE TABLE IF NOT EXISTS Question 
+CREATE TABLE IF NOT EXISTS Questions 
 ( 
   Question_Id INT NOT NULL AUTO_INCREMENT,  
   Statement LONGTEXT,  

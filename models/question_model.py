@@ -19,7 +19,7 @@ def create_question_table():
   if conn:
     cursor = conn.cursor()
     cursor.execute('''
-      CREATE TABLE IF NOT EXISTS Question 
+      CREATE TABLE IF NOT EXISTS Questions 
       ( 
         Question_Id INT NOT NULL AUTO_INCREMENT,  
         Statement LONGTEXT,  

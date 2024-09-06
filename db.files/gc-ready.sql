@@ -1,12 +1,12 @@
 -- Drop generated tables to start again (development)
-DROP TABLE Books;
-DROP TABLE Hunter_Stats;
-DROP TABLE Hunters;
-DROP TABLE Locations;
-DROP TABLE Types_Hunter;
-DROP TABLE Question;
-DROP TABLE Types_Question;
-DROP TABLE Cards;
+-- DROP TABLE Books;
+-- DROP TABLE Hunter_Stats;
+-- DROP TABLE Hunters;
+-- DROP TABLE Locations;
+-- DROP TABLE Types_Hunter;
+-- DROP TABLE Question;
+-- DROP TABLE Types_Question;
+-- DROP TABLE Cards;
 
 -- INSERT INTO () VALUES ();
 
@@ -56,7 +56,7 @@ INSERT INTO Cards (Title, Quantity, Description, Slot_Number, Difficulty_Code) V
 -- 89 - 100 : Difficulty 9
 
 -- Anime Questions - Type_Question_Id (1)
-INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ("", 1, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o verdadeiro nome de L em "Death Note"?', 1, 1);
 
 -- Music Questions - Type_Question_Id (2)
 INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ("", 2, 1);
