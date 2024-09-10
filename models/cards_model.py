@@ -26,14 +26,23 @@ class CardModel:
         """
         self.conn = get_db_connection()
 
-    def get_available_cards(self):
+    def get_available_cards(self, hunter_id):
         """
         Retorna todas as cartas disponíveis no sistema com suas respectivas quantidades e detalhes.
         Isso inclui título, descrição, nível de dificuldade, quantidade, etc.
         """
         if self.conn:
             cursor = self.conn.cursor(dictionary=True)
-            cursor.execute('SELECT * FROM Cards')
+            cursor.execute(f'''
+              SELECT c.Title, c.Quantity, c.Description,
+              c.Card_Id, c.Card_Img, c.Slot_Number,
+              c.Difficulty_Code, cd.Difficulty_Description,
+              (20000000 - (1000 * c.Difficulty_Code)) AS Card_Value
+              FROM Cards c
+              INNER JOIN Cards_Difficulty cd ON cd.Difficulty_Code = c.Difficulty_Code
+              WHERE (20000000 - (1000 * c.Difficulty_Code)) <= (SELECT Jenny_Qtd from Hunter_Stats WHERE Hunter_Id = {hunter_id})
+              ORDER BY c.Slot_Number ASC
+            ''')
             cards = cursor.fetchall()
             cursor.close()
             return cards
@@ -103,10 +112,16 @@ class CardModel:
       if self.conn:
           cursor = self.conn.cursor(dictionary=True)
           cursor.execute('''
-              SELECT c.* FROM Cards c
+              SELECT c.Card_Id, c.Title, c.Description,
+              c.Card_Img, c.Difficulty_Code, c.Quantity,
+              cd.Difficulty_Description, c.Slot_Number,
+              (20000000 - (1000 * c.Difficulty_Code)) AS Card_Value
+              FROM Cards c
+              JOIN Cards_Difficulty cd ON cd.Difficulty_Code = c.Difficulty_Code
               JOIN Books_Cards bc ON c.Card_Id = bc.Card_Id
               JOIN Books b ON bc.Book_Id = b.Book_Id
               WHERE b.Hunter_Id = %s
+              ORDER BY c.Slot_Number ASC
           ''', (hunter_id,))
           cards = cursor.fetchall()
           cursor.close()
@@ -129,14 +144,6 @@ class CardModel:
                 # Cobrar Jenny do jogador
                 cursor.execute('UPDATE Hunter_Stats SET Jenny_Qtd = Jenny_Qtd - %s WHERE Hunter_Id = %s', (jenny_paid, hunter_id))
 
-                # Verificar a resposta da pergunta (associada à carta)
-                cursor.execute('SELECT Answer FROM Questions WHERE Card_Id = %s', (card_id,))
-                question = cursor.fetchone()
-
-                if question and answer == question['Answer']:
-                    # Adicionar a carta ao Book do Hunter
-                    self.add_card_to_book(hunter_id, card_id)
-
                 self.conn.commit()
             cursor.close()
 
@@ -146,40 +153,9 @@ class CardModel:
         Remove a carta do Hunter de origem (hunter_id_from) e a adiciona ao Hunter de destino (hunter_id_to).
         """
         if self.conn:
-            try:
-                cursor = self.conn.cursor()
-
-                # Verificar se o Hunter de origem realmente possui a carta
-                cursor.execute('''
-                    SELECT idbook FROM Books_Cards 
-                    WHERE idcard = %s AND idbook = (SELECT Book_Id FROM Books WHERE Hunter_Id = %s)
-                ''', (card_id, hunter_id_from))
-                if cursor.fetchone() is None:
-                    return {"msg": "The source Hunter does not own this card."}
-
-                # Remover carta do Hunter de origem
-                cursor.execute('''
-                    DELETE FROM Books_Cards 
-                    WHERE idcard = %s AND idbook = (SELECT Book_Id FROM Books WHERE Hunter_Id = %s)
-                ''', (card_id, hunter_id_from))
-
-                # Adicionar carta ao Hunter de destino
-                cursor.execute('''
-                    INSERT INTO Books_Cards (idcard, idbook)
-                    SELECT %s, Book_Id FROM Books WHERE Hunter_Id = %s
-                ''', (card_id, hunter_id_to))
-
-                # Confirmar as mudanças
-                self.conn.commit()
-
-                return {"msg": "Trade successful"}
-
-            except Exception as e:
-                self.conn.rollback()  # Reverter transações em caso de erro
-                return {"msg": f"Error during trade: {str(e)}"}
-
-            finally:
-                cursor.close()
+          cursor = self.conn.cursor()
+          cursor.callproc('GrantCardToHunterByBuying', (hunter_id_from, hunter_id_to, card_id))
+          cursor.close()
 
     def __del__(self):
         """
@@ -220,7 +196,7 @@ def create_cards_table():
           CREATE TABLE IF NOT EXISTS Cards 
           ( 
             Title Varchar(500) NOT NULL,  
-            Quantity INT NOT NULL,  
+            Quantity BIGINT UNSIGNED NOT NULL,  
             Description varchar(500) NOT NULL,  
             Card_Id INT NOT NULL AUTO_INCREMENT,  
             Card_Img LONGBLOB,  
@@ -228,7 +204,7 @@ def create_cards_table():
             Difficulty_Code INT NOT NULL,  
             PRIMARY KEY (Card_Id),
             FOREIGN KEY (Difficulty_Code) REFERENCES Cards_Difficulty (Difficulty_Code) ON DELETE CASCADE
-          );
+          ); 
         ''')
         conn.commit()  # Confirma a criação da tabela
         cursor.close()
@@ -255,3 +231,170 @@ def create_book_cards_table():
         conn.commit()  # Confirma a criação da tabela associativa
         cursor.close()
         conn.close()
+        
+        
+def create_card_challenge_table():
+    """
+    Cria a tabela Card_Challenge.
+    """
+    conn = get_db_connection()  # Inicializa a conexão com o banco de dados
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+          CREATE TABLE IF NOT EXISTS Card_Challenge 
+          ( 
+            Card_Challenge_Id INT NOT NULL AUTO_INCREMENT,  
+            Card_Id INT NOT NULL,  
+            PRIMARY KEY (Card_Challenge_Id),
+            FOREIGN KEY (Card_Id) REFERENCES Cards (Card_Id) ON DELETE CASCADE
+          );
+        ''')
+        conn.commit()  # Confirma a criação da tabela associativa
+        cursor.close()
+        conn.close()
+        
+
+def add_card_challenge(card_id):
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor()
+    cursor.execute(f'''
+      INSERT INTO Card_Challenge (Card_Id) VALUES ({card_id})
+    ''')
+    card_challenge_id = cursor.lastrowid
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return card_challenge_id
+  
+
+def check_card_challenge(card_id, hunter_id):
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(f'''
+      SELECT cc.Card_Challenge_Id FROM Card_Challenge cc
+      INNER JOIN Card_Challenge_Answer cca ON cca.Card_Challenge_Id = cc.Card_Challenge_Id
+      INNER JOIN Answers a ON a.Answer_Id = cca.Answer_Id
+      WHERE cc.Card_Id = {card_id} AND a.Hunter_Id = {hunter_id}
+    ''')
+    card_challenge = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return card_challenge
+
+
+def create_card_challenge_answer_table():
+    """
+    Cria a tabela associativa Card_Challenge_Answer, entre Card_Challenge e Answer.
+    """
+    conn = get_db_connection()  # Inicializa a conexão com o banco de dados
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+          CREATE TABLE IF NOT EXISTS Card_Challenge_Answer 
+          ( 
+            Card_Challenge_Id INT NOT NULL,  
+            Answer_Id INT NOT NULL,
+            PRIMARY KEY (Card_Challenge_Id, Answer_Id),
+            FOREIGN KEY (Card_Challenge_Id) REFERENCES Card_Challenge (Card_Challenge_Id) ON DELETE CASCADE,
+            FOREIGN KEY (Answer_Id) REFERENCES Answers (Answer_Id) ON DELETE CASCADE
+          );
+        ''')
+        conn.commit()  # Confirma a criação da tabela associativa
+        cursor.close()
+        conn.close()
+        
+def add_card_challenge_answer(answer_id, card_challenge_id):
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor()
+    cursor.execute('''
+      INSERT INTO Card_Challenge_Answer (Answer_Id, Card_Challenge_Id) VALUES (%s, %s)               
+    ''', (answer_id, card_challenge_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+    
+def create_grant_card_by_challenge_procedure():
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor()
+    cursor.execute('''
+      CREATE OR REPLACE PROCEDURE GrantCardToHunterByChallenge(
+        IN cardId INT,
+        IN bookId INT,
+        IN hunterId INT,
+        IN answerId INT,
+        IN cardChallengeId INT
+      )
+      BEGIN
+        DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+        BEGIN
+          ROLLBACK;
+        END;
+        START TRANSACTION;
+        INSERT INTO Books_Cards (Card_Id, Book_Id) VALUES (cardId, bookId);
+        UPDATE Hunter_Stats 
+        SET Cards_Qtd = (
+          SELECT COUNT(DISTINCT Card_Id) FROM Books_Cards
+          WHERE Book_Id = bookId
+        )
+        WHERE Hunter_Id = hunterId;
+        UPDATE Cards SET Quantity = Quantity - 1 WHERE Card_Id = cardId;
+        DELETE FROM Answers WHERE Answer_Id = answerId;
+        DELETE FROM Card_Challenge WHERE Card_Challenge_Id = cardChallengeId;
+        COMMIT;
+      END            
+    ''')
+    cursor.close()
+    conn.close()
+    
+    
+def create_grant_card_by_buying_procedure():
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor()
+    cursor.execute('''
+      CREATE OR REPLACE PROCEDURE GrantCardToHunterByBuying(
+        IN ownerHunterId INT,
+        IN buyerHunterId INT,
+        IN cardId INT
+      )
+      BEGIN
+        DECLARE EXIT HANDLER FOR SQLEXCEPTION
+        BEGIN
+          ROLLBACK;
+        END;
+        START TRANSACTION;
+
+        INSERT INTO Books_Cards (Card_Id, Book_Id) VALUES (cardId,
+        (SELECT Book_Id FROM Books WHERE Hunter_Id = buyerHunterId));
+
+        UPDATE Hunter_Stats SET Jenny_Qtd = Jenny_Qtd - (
+          SELECT (20000000 - (Difficulty_Code * 1000)) FROM Cards WHERE Card_Id = cardId
+        ) WHERE Hunter_Id = buyerHunterId;
+
+        DELETE FROM Books_Cards WHERE (Card_Id = cardId AND Book_Id = (
+          SELECT Book_Id FROM Books WHERE Hunter_Id = ownerHunterId)
+        );
+
+        UPDATE Hunter_Stats 
+        SET Cards_Qtd = (
+          SELECT COUNT(DISTINCT Card_Id) FROM Books_Cards
+          WHERE Book_Id = (SELECT Book_Id FROM Books WHERE Hunter_Id = buyerHunterId)
+        )
+        WHERE Hunter_Id = buyerHunterId;
+
+        UPDATE Hunter_Stats 
+        SET Cards_Qtd = (
+          SELECT COUNT(DISTINCT Card_Id) FROM Books_Cards
+          WHERE Book_Id = (SELECT Book_Id FROM Books WHERE Hunter_Id = ownerHunterId)
+        )
+        WHERE Hunter_Id = ownerHunterId;
+        COMMIT;
+      END      
+    ''')
+    cursor.close()
+    conn.close()

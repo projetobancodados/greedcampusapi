@@ -74,3 +74,20 @@ def fetch_types_question():
     conn.close()
     return types_question
   return []
+
+
+def fetch_question_by_type_and_difficulty(type_question_id, difficulty_code):
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(f''' 
+      SELECT * FROM Questions WHERE Type_Question_Id = {type_question_id}
+      AND Difficulty_Code = {difficulty_code}
+      ORDER BY RAND()
+      LIMIT 1
+    ''')
+    question = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return question
+  return {}

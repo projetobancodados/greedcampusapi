@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS Hunters
 CREATE TABLE IF NOT EXISTS Hunter_Stats 
 (
   Hunter_Stats_Id INT NOT NULL AUTO_INCREMENT,
-  Jenny_Qtd BIGINT,  
+  Jenny_Qtd BIGINT UNSIGNED,  
   Cards_Qtd INT,  
   Hunter_Id INT NOT NULL,
   PRIMARY KEY (Hunter_Stats_Id),
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS Cards_Difficulty
 CREATE TABLE IF NOT EXISTS Cards 
 ( 
   Title Varchar(500) NOT NULL,  
-  Quantity INT NOT NULL,  
+  Quantity BIGINT UNSIGNED NOT NULL,  
   Description varchar(500) NOT NULL,  
   Card_Id INT NOT NULL AUTO_INCREMENT,  
   Card_Img LONGBLOB,  
@@ -108,9 +108,40 @@ CREATE TABLE IF NOT EXISTS Questions
   FOREIGN KEY (Difficulty_Code) REFERENCES Cards_Difficulty (Difficulty_Code) ON DELETE CASCADE
 );
 
+-- Criar no sistema (flask)
+CREATE TABLE IF NOT EXISTS Answers
+( 
+  Content TEXT,  
+  Answer_Id INT NOT NULL AUTO_INCREMENT, 
+  Hunter_Id INT NOT NULL,
+  Question_Id INT NOT NULL,
+  PRIMARY KEY (Answer_Id),
+  FOREIGN KEY (Hunter_Id) REFERENCES Hunters (Hunter_Id) ON DELETE CASCADE,
+  FOREIGN KEY (Question_Id) REFERENCES Questions (Question_Id) ON DELETE CASCADE
+);
+
+-- Criar no sistema (flask)
+CREATE TABLE IF NOT EXISTS Card_Challenge 
+( 
+  Card_Challenge_Id INT NOT NULL AUTO_INCREMENT,  
+  Card_Id INT NOT NULL,  
+  PRIMARY KEY (Card_Challenge_Id),
+  FOREIGN KEY (Card_Id) REFERENCES Cards (Card_Id) ON DELETE CASCADE
+); 
+
+-- Criar no sistema (flask)
+CREATE TABLE IF NOT EXISTS Card_Challenge_Answer 
+( 
+  Card_Challenge_Id INT NOT NULL,  
+  Answer_Id INT NOT NULL,
+  PRIMARY KEY (Card_Challenge_Id, Answer_Id),
+  FOREIGN KEY (Card_Challenge_Id) REFERENCES Card_Challenge (Card_Challenge_Id) ON DELETE CASCADE,
+  FOREIGN KEY (Answer_Id) REFERENCES Answers (Answer_Id) ON DELETE CASCADE
+); 
 ---------------------------------------------- Views
-CREATE OR REPLACE VIEW IF NOT EXISTS All_Hunter_Info AS
-SELECT h.Hunter_Id, h.Type_Hunter_Id, h.Location_Id, h.Type_Question_Id,
+-- View com todas as informações necessárias sobre o Hunter
+CREATE OR REPLACE VIEW All_Hunter_Info AS
+SELECT h.Hunter_Id, h.Type_Hunter_Id, h.Location_Id, h.Type_Question_Id AS Type_Question,
 hs.Jenny_Qtd, hs.Cards_Qtd, b.Book_Id
 FROM Hunters h
 INNER JOIN Types_Hunter th ON th.Type_Hunter_Id = h.Type_Hunter_Id
@@ -119,30 +150,85 @@ INNER JOIN Locations l ON l.Location_Id = h.Location_Id
 INNER JOIN Types_Question tq ON tq.Type_Question_Id = h.Type_Question_Id
 INNER JOIN Books b ON b.Hunter_Id = h.Hunter_Id;
 
+-- View com todas as informações necessárias sobre uma solicitação
+-- de desafio de um Hunter
+CREATE OR REPLACE VIEW All_Hunter_Answer AS
+SELECT h.Hunter_Id, h.Username, q.Statement, a.Content AS Answer, 
+a.Answer_Id, c.Card_Id, c.Description, cc.Card_Challenge_Id, b.Book_Id
+FROM Hunters h
+INNER JOIN Books b ON b.Hunter_Id = h.Hunter_Id
+INNER JOIN Answers a ON a.Hunter_Id = h.Hunter_Id
+INNER JOIN Card_Challenge_Answer cca ON cca.Answer_Id = a.Answer_Id
+INNER JOIN Questions q ON q.Question_Id = a.Question_Id
+INNER JOIN Card_Challenge cc ON cc.Card_Challenge_Id = cca.Card_Challenge_Id
+INNER JOIN Cards c ON c.Card_Id = cc.Card_Id;
 
 ---------------------------------------------- Procedures
+-- Procedure para conceder uma carta a um Hunter
+-- em caso de desafio vencido
+CREATE OR REPLACE PROCEDURE (
+  IN cardId INT,
+  IN bookId INT,
+  IN hunterId INT,
+  IN answerId INT,
+  IN cardChallengeId INT
+)
+BEGIN
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+  BEGIN
+    ROLLBACK;
+  END;
+  START TRANSACTION;
+  INSERT INTO Books_Cards (Card_Id, Book_Id) VALUES (cardId, bookId);
+  UPDATE Hunter_Stats 
+  SET Cards_Qtd = (
+    SELECT COUNT(DISTINCT Card_Id) FROM Books_Cards
+    WHERE Book_Id = bookId
+  )
+  WHERE Hunter_Id = hunterId;
+  UPDATE Cards SET Quantity = Quantity - 1 WHERE Card_Id = cardId;
+  DELETE FROM Answers WHERE Answer_Id = answerId;
+  DELETE FROM Card_Challenge WHERE Card_Challenge_Id = cardChallengeId;
+  COMMIT;
+END 
 
+-- Procedure para conceder uma carta a um Hunter
+-- em caso de compra de outro hunter
+CREATE OR REPLACE PROCEDURE GrantCardToHunterByBuying(
+  IN ownerHunterId INT,
+  IN buyerHunterId INT,
+  IN cardId INT
+)
+BEGIN
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+  END;
+  START TRANSACTION;
 
----------------------------------------------- Corrigir a partir daqui
-CREATE TABLE answer 
-( 
- content text,  
- id INT PRIMARY KEY,  
-); 
+  INSERT INTO Books_Cards (Card_Id, Book_Id) VALUES (cardId,
+  (SELECT Book_Id FROM Books WHERE Hunter_Id = buyerHunterId));
 
-CREATE TABLE card_challenge 
-( 
- id INT PRIMARY KEY,  
- idcard INT,  
-); 
+  UPDATE Hunter_Stats SET Jenny_Qtd = Jenny_Qtd - (
+    SELECT (20000000 - (Difficulty_Code * 1000)) FROM Cards WHERE Card_Id = cardId
+  ) WHERE Hunter_Id = buyerHunterId;
 
- 
-CREATE TABLE card_challenge_answer 
-( 
- idcard_challenge INT PRIMARY KEY,  
- idanswer INT,  
-); 
+  DELETE FROM Books_Cards WHERE (Card_Id = cardId AND Book_Id = (
+    SELECT Book_Id FROM Books WHERE Hunter_Id = ownerHunterId)
+  );
 
+  UPDATE Hunter_Stats 
+  SET Cards_Qtd = (
+    SELECT COUNT(DISTINCT Card_Id) FROM Books_Cards
+    WHERE Book_Id = (SELECT Book_Id FROM Books WHERE Hunter_Id = buyerHunterId)
+  )
+  WHERE Hunter_Id = buyerHunterId;
 
-ALTER TABLE card_challenge_answer ADD FOREIGN KEY(idcard_challenge) REFERENCES card_challenge (id);
-ALTER TABLE card_challenge_answer ADD FOREIGN KEY(idanswer) REFERENCES answer (id);
+  UPDATE Hunter_Stats 
+  SET Cards_Qtd = (
+    SELECT COUNT(DISTINCT Card_Id) FROM Books_Cards
+    WHERE Book_Id = (SELECT Book_Id FROM Books WHERE Hunter_Id = ownerHunterId)
+  )
+  WHERE Hunter_Id = ownerHunterId;
+  COMMIT;
+END

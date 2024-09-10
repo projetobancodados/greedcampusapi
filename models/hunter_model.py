@@ -67,7 +67,7 @@ def create_hunter_stats_table():
         CREATE TABLE IF NOT EXISTS Hunter_Stats 
         (
           Hunter_Stats_Id INT NOT NULL AUTO_INCREMENT,
-          Jenny_Qtd BIGINT,  
+          Jenny_Qtd BIGINT UNSIGNED,  
           Cards_Qtd INT,  
           Hunter_Id INT NOT NULL,
           PRIMARY KEY (Hunter_Stats_Id),
@@ -144,7 +144,7 @@ def create_all_hunter_info_view():
       cursor = conn.cursor()
       cursor.execute('''
         CREATE OR REPLACE VIEW All_Hunter_Info AS
-        SELECT h.Hunter_Id, h.Type_Hunter_Id, h.Location_Id, h.Type_Question_Id,
+        SELECT h.Hunter_Id, h.Type_Hunter_Id, h.Location_Id, h.Type_Question_Id AS Type_Question,
         hs.Jenny_Qtd, hs.Cards_Qtd, b.Book_Id
         FROM Hunters h
         INNER JOIN Types_Hunter th ON th.Type_Hunter_Id = h.Type_Hunter_Id
@@ -203,7 +203,8 @@ def fetch_hunters():
     cursor = conn.cursor(dictionary=True)  # Fetch rows as dictionaries
     cursor.execute('''
       SELECT h.Hunter_Id, h.Username,
-      CAST(h.Avatar AS CHAR) AS Avatar, hs.Jenny_Qtd, hs.Cards_Qtd
+      CAST(h.Avatar AS CHAR) AS Avatar, hs.Jenny_Qtd, hs.Cards_Qtd,
+      Location_Id
       From Hunters h
       INNER JOIN Hunter_Stats hs ON hs.Hunter_Id = h.Hunter_Id
       ORDER BY hs.Cards_Qtd DESC, hs.Jenny_Qtd DESC
@@ -246,6 +247,19 @@ def delete_hunter(hunter_id):
     cursor = conn.cursor()
     cursor.execute(f'''
       DELETE FROM Hunters WHERE Hunter_Id = {hunter_id}
+    ''')
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+    
+def update_hunter_stats_jenny(hunter_id, jenny_value):
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor()
+    cursor.execute(f'''
+      UPDATE Hunter_Stats SET Jenny_Qtd = Jenny_Qtd + ({jenny_value})
+      WHERE Hunter_Id = {hunter_id}
     ''')
     conn.commit()
     cursor.close()
