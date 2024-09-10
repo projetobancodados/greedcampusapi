@@ -30,3 +30,16 @@ def add_answer():
       cards_model.add_card_challenge_answer(answer_id, card_challenge_id)
       return {"msg": "Challenge successfully submitted!"}
   return {}
+
+
+def remove_answer():
+  if request.method == 'DELETE':
+    answer_id = request.json['Answer_Id']
+    card_challenge_id = request.json['Card_Challenge_Id']
+    
+    answer_model.remove_answer(answer_id)
+    cards_model.remove_card_challenge(card_challenge_id)
+    
+    return {"msg": "Answer successfully removed!"}
+    
+  return {}

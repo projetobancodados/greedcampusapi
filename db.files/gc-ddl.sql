@@ -166,7 +166,7 @@ INNER JOIN Cards c ON c.Card_Id = cc.Card_Id;
 ---------------------------------------------- Procedures
 -- Procedure para conceder uma carta a um Hunter
 -- em caso de desafio vencido
-CREATE OR REPLACE PROCEDURE (
+CREATE OR REPLACE PROCEDURE GrantCardToHunterByChallenge(
   IN cardId INT,
   IN bookId INT,
   IN hunterId INT,
@@ -190,7 +190,7 @@ BEGIN
   DELETE FROM Answers WHERE Answer_Id = answerId;
   DELETE FROM Card_Challenge WHERE Card_Challenge_Id = cardChallengeId;
   COMMIT;
-END 
+END   
 
 -- Procedure para conceder uma carta a um Hunter
 -- em caso de compra de outro hunter
@@ -232,3 +232,29 @@ BEGIN
   WHERE Hunter_Id = ownerHunterId;
   COMMIT;
 END
+
+-- Procedure para retomar a quantidade de cartas
+-- caso o Hunter apague a conta
+CREATE OR REPLACE PROCEDURE BanOrRemoveHunter (
+  IN hunterId INT
+)
+BEGIN
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+  BEGIN
+    ROLLBACK;
+  END;
+  START TRANSACTION;
+  
+  UPDATE Cards c SET c.Quantity = c.Quantity + (
+  SELECT COUNT(bc.Card_Id) FROM Books_Cards bc
+  WHERE bc.Book_Id = (SELECT b.Book_Id FROM Books b WHERE Hunter_Id = hunterId)
+  AND bc.Card_Id = c.Card_Id);
+
+  DELETE FROM Books_Cards WHERE Book_Id = (SELECT Book_Id FROM Books WHERE Hunter_Id = hunterId);
+  DELETE FROM Hunter_Stats WHERE Hunter_Id = hunterId;
+  DELETE FROM Books WHERE Hunter_Id = hunterId;
+  DELETE FROM Answers WHERE Hunter_Id = hunterId;
+  DELETE FROM Hunters WHERE Hunter_Id = hunterId;
+
+  COMMIT;
+END 

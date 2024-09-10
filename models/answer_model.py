@@ -54,7 +54,7 @@ def fetch_answers():
   conn = get_db_connection()
   if conn:
     cursor = conn.cursor(dictionary=True)  # Fetch rows as dictionaries
-    cursor.execute('SELECT * FROM Answers')
+    cursor.execute('SELECT * FROM All_Hunter_Answer')
     questions = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -77,6 +77,18 @@ def create_all_hunter_answer_view():
       INNER JOIN Questions q ON q.Question_Id = a.Question_Id
       INNER JOIN Card_Challenge cc ON cc.Card_Challenge_Id = cca.Card_Challenge_Id
       INNER JOIN Cards c ON c.Card_Id = cc.Card_Id;
+    ''')
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+    
+def remove_answer(answer_id):
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor()
+    cursor.execute(f'''
+      DELETE FROM Answers WHERE Answer_Id = {answer_id}
     ''')
     conn.commit()
     cursor.close()

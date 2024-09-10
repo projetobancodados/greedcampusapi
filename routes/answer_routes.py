@@ -22,3 +22,12 @@ def add_answer():
     return answer_controller.add_answer()
   except Exception as e:
     return json.dumps({"msg" : e.msg})
+  
+  
+@answer.route('/answer/remove', methods=['DELETE'])
+@cross_origin()
+def remove_answer():
+  try:
+    return answer_controller.remove_answer()
+  except Exception as e:
+    return json.dumps({"msg" : e.msg})

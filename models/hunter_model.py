@@ -241,14 +241,44 @@ def update_hunter(hunter_id, content):
     conn.close()
 
 
+def create_ban_or_remove_hunter_procedure():
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor()
+    cursor.execute('''
+      CREATE OR REPLACE PROCEDURE BanOrRemoveHunter (
+        IN hunterId INT
+      )
+      BEGIN
+        DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+        BEGIN
+          ROLLBACK;
+        END;
+        START TRANSACTION;
+        
+        UPDATE Cards c SET c.Quantity = c.Quantity + (
+        SELECT COUNT(bc.Card_Id) FROM Books_Cards bc
+        WHERE bc.Book_Id = (SELECT b.Book_Id FROM Books b WHERE Hunter_Id = hunterId)
+        AND bc.Card_Id = c.Card_Id);
+
+        DELETE FROM Books_Cards WHERE Book_Id = (SELECT Book_Id FROM Books WHERE Hunter_Id = hunterId);
+        DELETE FROM Hunter_Stats WHERE Hunter_Id = hunterId;
+        DELETE FROM Books WHERE Hunter_Id = hunterId;
+        DELETE FROM Answers WHERE Hunter_Id = hunterId;
+        DELETE FROM Hunters WHERE Hunter_Id = hunterId;
+
+        COMMIT;
+      END               
+    ''')
+    cursor.close()
+    conn.close()
+
+
 def delete_hunter(hunter_id):
   conn = get_db_connection()
   if conn:
     cursor = conn.cursor()
-    cursor.execute(f'''
-      DELETE FROM Hunters WHERE Hunter_Id = {hunter_id}
-    ''')
-    conn.commit()
+    cursor.callproc('BanOrRemoveHunter', (hunter_id, ))
     cursor.close()
     conn.close()
     

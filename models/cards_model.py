@@ -48,7 +48,7 @@ class CardModel:
             return cards
         return []
 
-    def add_card_to_book(self, hunter_id, card_id):
+    def add_card_to_book(self, add_card_data):
         """
         Adiciona uma carta ao Book do jogador (hunter_id) se houver quantidade disponível.
         Atualiza a tabela de `Books_Cards` para associar a carta ao Book (idbook) do Hunter.
@@ -56,21 +56,7 @@ class CardModel:
         """
         if self.conn:
             cursor = self.conn.cursor()
-
-            # Verificar se a carta está disponível (quantidade > 0)
-            cursor.execute('SELECT Quantity FROM Cards WHERE Card_Id = %s', (card_id,))
-            card = cursor.fetchone()
-            if card and card['Quantity'] > 0:
-                # Diminuir a quantidade da carta no sistema
-                cursor.execute('UPDATE Cards SET Quantity = Quantity - 1 WHERE Card_Id = %s', (card_id,))
-
-                # Associar a carta ao Book do Hunter na tabela Books_Cards
-                cursor.execute('''
-                    INSERT INTO Books_Cards (idcard, idbook)
-                    SELECT %s, Book_Id FROM Books WHERE Hunter_Id = %s
-                ''', (card_id, hunter_id))
-
-                self.conn.commit()
+            cursor.callproc('GrantCardToHunterByChallenge', add_card_data)
             cursor.close()
 
     def remove_card_from_book(self, hunter_id, card_id):
@@ -104,7 +90,7 @@ class CardModel:
             cursor.close()
 
     def get_cards_in_book(self, hunter_id):
-      print(hunter_id)
+      
       """
       Retorna todas as cartas que o Hunter (hunter_id) possui em seu Book.
       Consulta a tabela associativa `Books_Cards` para verificar as cartas associadas ao Book de um Hunter.
@@ -282,6 +268,18 @@ def check_card_challenge(card_id, hunter_id):
     cursor.close()
     conn.close()
     return card_challenge
+
+
+def remove_card_challenge(card_challenge_id):
+  conn = get_db_connection()
+  if conn:
+    cursor = conn.cursor()
+    cursor.execute(f'''
+      DELETE FROM Card_Challenge WHERE Card_Challenge_Id = {card_challenge_id}
+    ''')
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 
 def create_card_challenge_answer_table():
