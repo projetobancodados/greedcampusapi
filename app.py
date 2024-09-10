@@ -51,6 +51,7 @@ cards_model.create_book_cards_table()  # Inicializa a tabela associativa book_ca
 answer_model.create_all_hunter_answer_view()
 cards_model.create_grant_card_by_challenge_procedure()
 cards_model.create_grant_card_by_buying_procedure()
+hunter_model.create_ban_or_remove_hunter_procedure()
 
 # Inicia a aplicação
 if __name__ == '__main__':

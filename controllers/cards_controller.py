@@ -17,20 +17,26 @@ def get_available_cards(hunter_id):
         return {"game_cards": available_cards}
 
 # Controller to add a card to the Hunter's book
-def add_card_to_book(hunter_id):
+def add_card_to_book():
     """
     Adiciona uma carta ao Book do Hunter, se houver quantidade disponível.
     """
     if request.method == 'POST':
-        card_id = request.json.get('Card_Id')
+        add_card_data = (
+          request.json.get('Card_Id'),
+          request.json.get('Book_Id'),
+          request.json.get('Hunter_Id'),
+          request.json.get('Answer_Id'),
+          request.json.get('Card_Challenge_Id')
+        )
 
-        if not card_id:
-            return jsonify({"msg": "Card ID is required."}), 400
+        # if not card_id:
+        #     return jsonify({"msg": "Card ID is required."}), 400
 
         # Adiciona a carta ao Book do Hunter usando o card_model
-        card_model.add_card_to_book(hunter_id, card_id)
+        card_model.add_card_to_book(add_card_data)
 
-        return jsonify({"msg": f"Card {card_id} added to Hunter {hunter_id}'s book."}), 200
+        return jsonify({"msg": f"Card added to Hunter's book."}), 200
 
 # Controller to remove a card from the Hunter's book
 def remove_card_from_book(hunter_id):

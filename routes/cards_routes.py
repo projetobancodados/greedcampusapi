@@ -19,14 +19,14 @@ def available_cards(hunter_id):
 
 
 # Route to add a card to the Hunter's book
-@card.route('/cards/book/add/<int:hunter_id>', methods=['POST'])
+@card.route('/cards/book/add', methods=['POST'])
 @cross_origin()
-def add_card_to_book(hunter_id):
+def add_card_to_book():
     """
     Rota para adicionar uma carta ao Book de um Hunter.
     """
     try:
-        return cards_controller.add_card_to_book(hunter_id)
+        return cards_controller.add_card_to_book()
     except Exception as e:
         return json.dumps({"msg": str(e)}), 500
 
