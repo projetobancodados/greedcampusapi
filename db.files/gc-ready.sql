@@ -8,13 +8,6 @@
 -- DROP TABLE Types_Question;
 -- DROP TABLE Cards;
 
--- Select all hunters and sort descending by cards number, then jenny count
--- SELECT h.Hunter_Id, h.Username,
--- CAST(h.Avatar AS CHAR) AS Avatar, hs.Jenny_Qtd, hs.Cards_Qtd
--- From Hunters h
--- INNER JOIN Hunter_Stats hs ON hs.Hunter_Id = h.Hunter_Id
--- ORDER BY hs.Cards_Qtd DESC, hs.Jenny_Qtd DESC;
-
 -- INSERT INTO () VALUES ();
 
 -- Type_Hunter
@@ -37,6 +30,7 @@ INSERT INTO Types_Question (Description) VALUES ("Movie");
 
 -- Card Difficulty
 INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("SS");
+INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("S");
 INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("A");
 INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("B");
 INSERT INTO Cards_Difficulty (Difficulty_Description) VALUES ("C");
@@ -151,25 +145,347 @@ INSERT INTO Cards (Title, Quantity, Description, Slot_Number, Difficulty_Code) V
 
 -- Question 
 
--- 1  - 11  : Difficulty 1
--- 12 - 22  : Difficulty 2
--- 23 - 33  : Difficulty 3
--- 34 - 44  : Difficulty 4
--- 45 - 55  : Difficulty 5
--- 56 - 66  : Difficulty 6
--- 67 - 77  : Difficulty 7
--- 78 - 88  : Difficulty 8
--- 89 - 100 : Difficulty 9
+-- 1  - 10  : Difficulty 1
+-- 11 - 20  : Difficulty 2
+-- 21 - 30  : Difficulty 3
+-- 31 - 40  : Difficulty 4
+-- 41 - 50  : Difficulty 5
+-- 51 - 60  : Difficulty 6
+-- 61 - 70  : Difficulty 7
+-- 71 - 80  : Difficulty 8
+-- 81 - 90  : Difficulty 9
+-- 91 - 100 : Difficulty 10
 
 -- Anime Questions - Type_Question_Id (1)
 INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o verdadeiro nome de L em "Death Note"?', 1, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Em "Neon Genesis Evangelion", qual é a razão pela qual os Eva-01 podem se mover sem energia por 5 minutos?', 1, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome da espada usada por Guts em "Berserk"?', 1, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Em "One Piece", qual é a recompensa atual de Monkey D. Luffy? (Depois de Wano)', 1, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Quem é o verdadeiro autor dos mangás dentro do anime "Bakuman"?', 1, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Em "Naruto", qual é o nome completo do Quarto Hokage?', 1, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Your Lie in April" (Shigatsu wa Kimi no Uso)?', 1, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Em "Attack on Titan", qual é a verdadeira identidade do Titã Colossal?', 1, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do jogo jogado em "Sword Art Online"?', 1, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é a habilidade do Stand "The World" em "JoJos Bizarre Adventure: Stardust Crusaders"?', 1, 1);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do líder dos Cavaleiros do Zodíaco de Bronze em "Saint Seiya"?', 1, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Em "Fullmetal Alchemist", qual é o nome da substância que os alquimistas querem criar?', 1, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do Digimon parceiro de Tai em "Digimon Adventure"?', 1, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome da organização terrorista em "Akira"?', 1, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Quem é o principal antagonista em "Yu Yu Hakusho"?', 1, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Em "Dragon Ball Z", qual é o verdadeiro nome de Piccolo?', 1, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do notebook usado para matar pessoas em "Death Note"?', 1, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome da cidade onde se passa "Cowboy Bebop"?', 1, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do shinigami que acompanha Light em "Death Note"?', 1, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome da escola em que Ichigo Kurosaki estuda em "Bleach"?', 1, 2);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Em "One Piece", qual é a fruta do diabo que Luffy comeu?', 1, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome da irmã de Edward Elric em "Fullmetal Alchemist"?', 1, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do principal antagonista em "Dragon Ball Z"?', 1, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é a habilidade especial de Gon Freecss em "Hunter x Hunter"?', 1, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do cachorro de Inuyasha em "Inuyasha"?', 1, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista em "Trigun"?', 1, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é a profissão de Migi em "Parasyte"?', 1, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do líder da guilda Fairy Tail em "Fairy Tail"?', 1, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é a profissão de Tatsu em "The Way of the Househusband"?', 1, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Samurai Champloo"?', 1, 3);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do demônio dentro de Naruto?', 1, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Attack on Titan"?', 1, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é a habilidade de Natsu Dragneel em "Fairy Tail"?', 1, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "My Hero Academia"?', 1, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do irmão mais novo de Edward Elric em "Fullmetal Alchemist"?', 1, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Tokyo Ghoul"?', 1, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é a habilidade especial de Killua Zoldyck em "Hunter x Hunter"?', 1, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Sword Art Online"?', 1, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do demônio que acompanha Allen Walker em "D.Gray-man"?', 1, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Blue Exorcist"?', 1, 4);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Black Clover"?', 1, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "One Punch Man"?', 1, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é a habilidade especial de Meliodas em "The Seven Deadly Sins"?', 1, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Assassination Classroom"?', 1, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "The Promised Neverland"?', 1, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Demon Slayer: Kimetsu no Yaiba"?', 1, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Dr. Stone"?', 1, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Fire Force"?', 1, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Re:Zero"?', 1, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Kaguya-sama: Love Is War"?', 1, 5);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Mob Psycho 100"?', 1, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Vinland Saga"?', 1, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Jujutsu Kaisen"?', 1, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Beastars"?', 1, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Attack on Titan"?', 1, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "The Rising of the Shield Hero"?', 1, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "That Time I Got Reincarnated as a Slime"?', 1, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Food Wars!"?', 1, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "The Quintessential Quintuplets"?', 1, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Rent-A-Girlfriend"?', 1, 6);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Your Name"?', 1, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "A Silent Voice"?', 1, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Weathering With You"?', 1, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Promare"?', 1, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Children of the Whales"?', 1, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "The Garden of Words"?', 1, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "A Place Further than the Universe"?', 1, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Anohana: The Flower We Saw That Day"?', 1, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "March Comes in Like a Lion"?', 1, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Charlotte"?', 1, 7);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Orange"?', 1, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Erased"?', 1, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "ReLife"?', 1, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Your Lie in April"?', 1, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Toradora!"?', 1, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Clannad"?', 1, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Angel Beats!"?', 1, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Sword Art Online"?', 1, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "No Game No Life"?', 1, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "KonoSuba"?', 1, 8);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Steins;Gate"?', 1, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Re:Zero"?', 1, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "The Rising of the Shield Hero"?', 1, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "That Time I Got Reincarnated as a Slime"?', 1, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Overlord"?', 1, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Goblin Slayer"?', 1, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "The Saga of Tanya the Evil"?', 1, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Log Horizon"?', 1, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "The Devil Is a Part-Timer!"?', 1, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Miss Kobayashis Dragon Maid"?', 1, 9);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Attack on Titan"?', 1, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Naruto"?', 1, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "One Piece"?', 1, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Dragon Ball Z"?', 1, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Bleach"?', 1, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "My Hero Academia"?', 1, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Demon Slayer: Kimetsu no Yaiba"?', 1, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Sword Art Online"?', 1, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Death Note"?', 1, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('Qual é o nome do protagonista de "Fullmetal Alchemist"?', 1, 10);
 
 -- Music Questions - Type_Question_Id (2)
--- INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ("", 2, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 1);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 2);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 3);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 4);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 5);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 6);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 7);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 8);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 9);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 2, 10);
+
 
 -- Movie Questions - Type_Question_Id (3)
--- INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ("", 3, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 1);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 1);
 
----------------------- MOCK DATA ------------------------
--- Insert some cards on someone's Book
--- INSERT INTO Books_Cards (Book_Id, Card_Id) VALUES ();
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 2);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 2);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 3);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 3);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 4);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 4);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 5);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 5);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 6);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 6);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 7);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 7);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 8);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 8);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 9);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 9);
+
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 10);
+INSERT INTO Questions (Statement, Type_Question_Id, Difficulty_Code) VALUES ('', 3, 10);

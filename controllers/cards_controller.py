@@ -6,12 +6,12 @@ from models.cards_model import CardModel
 card_model = CardModel()
 
 # Controller to get all available cards
-def get_available_cards():
+def get_available_cards(hunter_id):
     """
     Retorna todas as cartas disponíveis no sistema, incluindo informações como quantidade e dificuldade.
     """
     if request.method == 'GET':
-        available_cards = card_model.get_available_cards()
+        available_cards = card_model.get_available_cards(hunter_id)
         if not available_cards:
             return {"game_cards": []}
         return {"game_cards": available_cards}
@@ -58,7 +58,6 @@ def get_cards_in_book(hunter_id):
     """
     if request.method == 'GET':
         cards_in_book = card_model.get_cards_in_book(hunter_id)
-
         if not cards_in_book:
             return {"hunter_cards": []}
 

@@ -16,3 +16,11 @@ def fetch_types_question():
     if not types_question:
       return {"msg": "Error retrieving types question"}
     return types_question
+  
+  
+def fetch_question_by_type_and_difficulty(type_question_id, difficulty_code):
+  if request.method == 'GET':
+    question = question_model.fetch_question_by_type_and_difficulty(type_question_id, difficulty_code)
+    if not question:
+      return {"msg": "Error retrieving question"}
+    return question

@@ -6,14 +6,14 @@ from controllers import cards_controller
 card = Blueprint('card', __name__)
 
 # Route to get all available cards
-@card.route('/cards', methods=['GET'])
+@card.route('/cards/<int:hunter_id>', methods=['GET'])
 @cross_origin()
-def available_cards():
+def available_cards(hunter_id):
     """
     Rota para listar todas as cartas disponíveis no sistema.
     """
     try:
-        return cards_controller.get_available_cards()
+        return cards_controller.get_available_cards(hunter_id)
     except Exception as e:
         return json.dumps({"msg": str(e)}), 500
 
