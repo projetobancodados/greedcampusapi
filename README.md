@@ -43,3 +43,8 @@ Execute o script:
 ```
 python app.py
 ```
+Popule o banco de dados:
+```
+mysql> source /path/to/greedcampusapi/db.files/gc-ready.sql
+```
+Ou simplesmente copie e cole o conteúdo do arquivo **gc-ready.sql** em seu SGDB e execute os scripts.
